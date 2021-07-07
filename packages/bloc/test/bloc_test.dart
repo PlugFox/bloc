@@ -437,8 +437,7 @@ void main() {
         final states = <AsyncState>[];
 
         asyncBloc
-          // ignore: deprecated_member_use_from_same_package
-          ..listen(states.add)
+          ..stream.listen(states.add)
           ..add(AsyncEvent());
 
         await asyncBloc.close();

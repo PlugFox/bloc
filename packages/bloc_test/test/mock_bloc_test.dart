@@ -28,8 +28,6 @@ void main() {
     });
 
     test('is compatible with listen', () {
-      // ignore: deprecated_member_use
-      expect(counterBloc.listen((_) {}), isA<StreamSubscription>());
       expect(counterBloc.stream.listen((_) {}), isA<StreamSubscription>());
     });
 
@@ -92,19 +90,6 @@ void main() {
           <Matcher>[equals(0), equals(1), equals(2), equals(3), emitsDone],
         ),
       );
-    });
-
-    test('is automatically compatible with whenListen (legacy)', () {
-      final states = <int>[];
-      whenListen(
-        counterBloc,
-        Stream<int>.fromIterable([0, 1, 2, 3]),
-      );
-      // ignore: deprecated_member_use
-      counterBloc.listen(states.add, onDone: () {
-        expect(states, equals([0, 1, 2, 3]));
-        expect(counterBloc.state, equals(3));
-      });
     });
   });
 }
