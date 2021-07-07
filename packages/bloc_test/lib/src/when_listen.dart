@@ -42,7 +42,7 @@ import 'package:mocktail/mocktail.dart';
 /// expect(counterBloc.state, equals(0));
 /// ```
 void whenListen<State>(
-  ISubscriber<State> bloc,
+  ISubject<State> bloc,
   Stream<State> stream, {
   State? initialState,
 }) {
@@ -71,7 +71,7 @@ void whenListen<State>(
     );
   });
 
-  when(() => bloc.stream).thenAnswer(
+  when(() => bloc.stream.toStream()).thenAnswer(
     (_) => broadcastStream.map((state) {
       when(() => bloc.state).thenReturn(state);
       return state;
