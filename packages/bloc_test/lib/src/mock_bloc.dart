@@ -50,7 +50,7 @@ class _MockIBloc<E, S> extends Mock implements IBloc<E, S> {
         cancelOnError: invocation.namedArguments[#cancelOnError] as bool?,
       );
     });
-    when(() => stream).thenAnswer((_) => Stream<S>.empty());
+    when(() => stream.toStream()).thenAnswer((_) => Stream<S>.empty());
     when(close).thenAnswer((_) => Future<void>.value());
     when(() => setState(any())).thenReturn(null);
   }
