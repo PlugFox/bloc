@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +36,7 @@ mixin BlocProviderSingleChildWidget on SingleChildWidget {}
 /// ```
 ///
 /// {@endtemplate}
-class BlocProvider<T extends IBloc<Object?>> extends SingleChildStatelessWidget
+class BlocProvider<T extends ISub<Object?>> extends SingleChildStatelessWidget
     with BlocProviderSingleChildWidget {
   /// {@macro bloc_provider}
   BlocProvider({
@@ -92,7 +94,7 @@ class BlocProvider<T extends IBloc<Object?>> extends SingleChildStatelessWidget
   /// ```dart
   /// BlocProvider.of<BlocA>(context);
   /// ```
-  static T of<T extends IBloc<Object?>>(
+  static T of<T extends ISub<Object?>>(
     BuildContext context, {
     bool listen = false,
   }) {
@@ -125,7 +127,11 @@ class BlocProvider<T extends IBloc<Object?>> extends SingleChildStatelessWidget
           )
         : InheritedProvider<T>(
             create: _create,
-            dispose: (_, bloc) => bloc.close(),
+            dispose: (_, bloc) {
+              if (bloc is StreamConsumer || bloc is Sink) {
+                (bloc as dynamic).close();
+              }
+            },
             startListening: _startListening,
             child: child,
             lazy: lazy,
@@ -133,11 +139,11 @@ class BlocProvider<T extends IBloc<Object?>> extends SingleChildStatelessWidget
   }
 
   static VoidCallback _startListening(
-    InheritedContext<IBloc> e,
-    IBloc value,
+    InheritedContext<ISub> e,
+    ISub value,
   ) {
     final subscription = value.stream.listen(
-      (dynamic _) => e.markNeedsNotifyDependents(),
+      (Object? _) => e.markNeedsNotifyDependents(),
     );
     return subscription.cancel;
   }

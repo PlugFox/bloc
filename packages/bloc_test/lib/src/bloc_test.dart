@@ -170,7 +170,9 @@ Future<void> testBloc<B extends ISub<State>, State>({
       }
       if (wait != null) await Future<void>.delayed(wait);
       await Future<void>.delayed(Duration.zero);
-      await bloc.close();
+      if (bloc is StreamConsumer) {
+        await (bloc as StreamConsumer).close();
+      }
       if (expect != null) {
         final dynamic expected = expect();
         shallowEquality = '$states' == '$expected';

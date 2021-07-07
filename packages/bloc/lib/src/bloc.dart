@@ -187,6 +187,12 @@ abstract class Bloc<Event extends Object?, State extends Object?>
 /// {@endtemplate}
 abstract class IBloc<Event extends Object?, State extends Object?>
     implements IPub<Event>, ISub<State> {
+  /// Notifies the [Bloc] of a new [event] which triggers [mapEventToState].
+  /// If [close] has already been called, any subsequent calls to [add] will
+  /// be ignored and will not result in any subsequent state changes.
+  @override
+  void add(Event event);
+
   /// Transforms the [events] stream along with a [transitionFn] function into
   /// a `Stream<Transition>`.
   /// Events that should be processed by [mapEventToState] need to be passed to
@@ -294,9 +300,6 @@ abstract class IPub<Event extends Object?> implements StreamSink<Event> {
   @mustCallSuper
   void addError(Object error, [StackTrace? stackTrace]);
 
-  /// Notifies the [Bloc] of a new [event] which triggers [mapEventToState].
-  /// If [close] has already been called, any subsequent calls to [add] will
-  /// be ignored and will not result in any subsequent state changes.
   @override
   void add(Event event);
 
@@ -383,6 +386,8 @@ abstract class ISub<State extends Object?> {
   /// as it is the first thing emitted by the instance.
   @protected
   @mustCallSuper
+
+  /// TODO: rename to `void setState(State state);`
   void emit(State state);
 
   /// Called whenever a [change] occurs with the given [change].
