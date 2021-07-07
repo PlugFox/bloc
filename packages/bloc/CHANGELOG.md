@@ -1,3 +1,7 @@
+# 8.0.0
+
+- **BREAKING**: remove all `Cubit` anti-patterns
+
 # 7.0.0
 
 - **BREAKING**: refactor: `Bloc` and `Cubit` extend `BlocBase`

@@ -36,8 +36,7 @@ class _MockBlocBase<S> extends Mock implements BlocBase<S> {
     registerFallbackValue<void Function(S)>((S _) {});
     registerFallbackValue<void Function()>(() {});
     when(
-      // ignore: deprecated_member_use
-      () => listen(
+      () => stream.listen(
         any(),
         onDone: any(named: 'onDone'),
         onError: any(named: 'onError'),

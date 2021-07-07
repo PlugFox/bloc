@@ -53,8 +53,7 @@ void whenListen<State>(
   }
 
   when(
-    // ignore: deprecated_member_use
-    () => bloc.listen(
+    () => bloc.stream.listen(
       any(),
       onDone: any(named: 'onDone'),
       onError: any(named: 'onError'),

@@ -270,27 +270,6 @@ abstract class BlocBase<State> {
   /// The current state stream.
   Stream<State> get stream => _stateController.stream;
 
-  /// Adds a subscription to the `Stream<State>`.
-  /// Returns a [StreamSubscription] which handles events from
-  /// the `Stream<State>` using the provided [onData], [onError] and [onDone]
-  /// handlers.
-  @Deprecated(
-    'Use stream.listen instead. Will be removed in v8.0.0',
-  )
-  StreamSubscription<State> listen(
-    void Function(State)? onData, {
-    Function? onError,
-    void Function()? onDone,
-    bool? cancelOnError,
-  }) {
-    return stream.listen(
-      onData,
-      onError: onError,
-      onDone: onDone,
-      cancelOnError: cancelOnError,
-    );
-  }
-
   /// Updates the [state] to the provided [state].
   /// [emit] does nothing if the instance has been closed or if the
   /// [state] being emitted is equal to the current [state].
