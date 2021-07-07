@@ -159,7 +159,7 @@ Future<void> testBloc<B extends ISub<State>, State>({
       final states = <State>[];
       final bloc = build();
       // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-      if (seed != null) bloc.emit(seed());
+      if (seed != null) bloc.setState(seed());
       final subscription = bloc.stream.skip(skip).listen(states.add);
       try {
         await act?.call(bloc);

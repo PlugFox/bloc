@@ -110,7 +110,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
       events.asyncExpand(transitionFn);
 
   @override
-  void emit(State state) {
+  void setState(State state) {
     if (_stateController.isClosed) return;
     onChange(Change<State>(currentState: this.state, nextState: state));
     _state = state;
@@ -159,7 +159,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
         (transition) {
           try {
             onTransition(transition);
-            emit(transition.nextState);
+            setState(transition.nextState);
           } catch (error, stackTrace) {
             onError(error, stackTrace);
           }
@@ -365,17 +365,10 @@ abstract class ISub<State extends Object?> {
   Stream<State> get stream;
 
   /// Updates the [state] to the provided [state].
-  /// [emit] does nothing if the instance has been closed or if the
-  /// [state] being emitted is equal to the current [state].
-  ///
-  /// To allow for the possibility of notifying listeners of the initial state,
-  /// emitting a state which is equal to the initial state is allowed as long
-  /// as it is the first thing emitted by the instance.
+  /// [setState] does nothing if the instance has been closed.
   @protected
   @mustCallSuper
-
-  /// TODO: rename to `void setState(State state);`
-  void emit(State state);
+  void setState(State state);
 
   /// Called whenever a [change] occurs with the given [change].
   /// A [change] occurs when a new `state` is emitted.

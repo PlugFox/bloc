@@ -32,7 +32,7 @@ void main() {
     });
 
     test('is compatible with emit', () {
-      counterBloc.emit(10);
+      counterBloc.setState(10);
     });
 
     test('is compatible with add', () {

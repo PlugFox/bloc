@@ -939,7 +939,7 @@ void main() {
         unawaited(
           expectLater(counterBloc.stream, emitsInOrder(const <int>[42])),
         );
-        counterBloc.emit(42);
+        counterBloc.setState(42);
         expect(counterBloc.state, 42);
         await counterBloc.close();
       });

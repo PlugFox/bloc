@@ -52,6 +52,6 @@ class _MockIBloc<E, S> extends Mock implements IBloc<E, S> {
     });
     when(() => stream).thenAnswer((_) => Stream<S>.empty());
     when(close).thenAnswer((_) => Future<void>.value());
-    when(() => emit(any())).thenReturn(null);
+    when(() => setState(any())).thenReturn(null);
   }
 }
