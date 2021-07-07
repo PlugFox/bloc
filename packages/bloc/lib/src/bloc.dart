@@ -309,8 +309,8 @@ abstract class BlocBase<State> {
 
   /// Called whenever a [change] occurs with the given [change].
   /// A [change] occurs when a new `state` is emitted.
-  /// [onChange] is called before the `state` of the `cubit` is updated.
-  /// [onChange] is a great spot to add logging/analytics for a specific `cubit`.
+  /// [onChange] is called before the `state` of the `bloc` is updated.
+  /// [onChange] is a great spot to add logging/analytics for a specific `bloc`.
   ///
   /// **Note: `super.onChange` should always be called first.**
   /// ```dart

@@ -19,7 +19,7 @@
 
 ---
 
-A Dart package that makes testing blocs and cubits easy. Built to work with [bloc](https://pub.dev/packages/bloc) and [mocktail](https://pub.dev/packages/mocktail).
+A Dart package that makes testing blocs easy. Built to work with [bloc](https://pub.dev/packages/bloc) and [mocktail](https://pub.dev/packages/mocktail).
 
 **Learn more at [bloclibrary.dev](https://bloclibrary.dev)!**
 
@@ -50,12 +50,11 @@ Our top sponsors are shown below! [[Become a Sponsor](https://github.com/sponsor
 import 'package:bloc_test/bloc_test.dart';
 
 class MockCounterBloc extends MockBloc<CounterEvent, int> implements CounterBloc {}
-class MockCounterCubit extends MockCubit<int> implements CounterCubit {}
 ```
 
 ## Stub the State Stream
 
-**whenListen** creates a stub response for the `listen` method on a bloc or cubit. Use `whenListen` if you want to return a canned `Stream` of states. `whenListen` also handles stubbing the `state` to stay in sync with the emitted state.
+**whenListen** creates a stub response for the `listen` method on a bloc. Use `whenListen` if you want to return a canned `Stream` of states. `whenListen` also handles stubbing the `state` to stay in sync with the emitted state.
 
 ```dart
 // Create a mock instance
@@ -114,18 +113,6 @@ group('CounterBloc', () {
     expect: () => [1],
   );
 });
-```
-
-`blocTest` can optionally be used with a seeded state.
-
-```dart
-blocTest(
-  'CounterCubit emits [10] when seeded with 9',
-  build: () => CounterCubit(),
-  seed: () => 9,
-  act: (cubit) => cubit.increment(),
-  expect: () => [10],
-);
 ```
 
 `blocTest` can also be used to `skip` any number of emitted states before asserting against the expected states. The default value is 0.
