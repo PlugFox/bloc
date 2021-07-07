@@ -1,3 +1,4 @@
+<!--
 <p align="right">
 <a href="https://flutter.dev/docs/development/packages-and-plugins/favorites"><img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/flutter_favorite.png" width="100" alt="build"></a>
 </p>
@@ -341,3 +342,4 @@ void main() {
 ## Maintainers
 
 - [Felix Angelov](https://github.com/felangel)
+-->

@@ -1,3 +1,4 @@
+<!--
 <p align="center">
 <img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_test_logo_full.png" height="100" alt="Bloc Test Package" />
 </p>
@@ -194,3 +195,4 @@ blocTest(
 ## Maintainers
 
 - [Felix Angelov](https://github.com/felangel)
+-->
