@@ -147,6 +147,13 @@ abstract class Bloc<Event extends Object?, State extends Object?>
     await _stateController.close();
   }
 
+  @override
+  Future<void> addStream(Stream<Event> eventStream) =>
+      _eventController.addStream(eventStream);
+
+  @override
+  Future<void> get done => _eventController.done;
+
   void _bindEventsToStates() {
     _transitionSubscription = transformTransitions(
       transformEvents(
@@ -349,6 +356,12 @@ abstract class IPub<Event extends Object?> implements StreamSink<Event> {
   @mustCallSuper
   @visibleForOverriding
   Future<void> close();
+
+  @override
+  Future<void> addStream(Stream<Event> eventStream);
+
+  @override
+  Future<void> get done;
 }
 
 /// {@template i_sub}
