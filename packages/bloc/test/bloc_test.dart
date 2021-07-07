@@ -9,7 +9,7 @@ import 'blocs/blocs.dart';
 
 class MockBlocObserver extends Mock implements BlocObserver {}
 
-class FakeBlocBase<S> extends Fake implements BlocBase<S> {}
+class FakeSub<S> extends Fake implements ISub<S> {}
 
 void main() {
   group('Bloc Tests', () {
@@ -409,7 +409,7 @@ void main() {
       late MockBlocObserver observer;
 
       setUpAll(() {
-        registerFallbackValue<BlocBase<dynamic>>(FakeBlocBase<dynamic>());
+        registerFallbackValue<ISub<dynamic>>(FakeSub<dynamic>());
         registerFallbackValue<StackTrace>(StackTrace.empty);
       });
 

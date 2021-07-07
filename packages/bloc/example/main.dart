@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 
 class SimpleBlocObserver extends BlocObserver {
   @override
-  void onCreate(BlocBase bloc) {
+  void onCreate(IBloc bloc) {
     super.onCreate(bloc);
     print('onCreate -- bloc: ${bloc.runtimeType}');
   }
@@ -16,7 +16,7 @@ class SimpleBlocObserver extends BlocObserver {
   }
 
   @override
-  void onChange(BlocBase bloc, Change change) {
+  void onChange(IBloc bloc, Change change) {
     super.onChange(bloc, change);
     print('onChange -- bloc: ${bloc.runtimeType}, change: $change');
   }
@@ -28,13 +28,13 @@ class SimpleBlocObserver extends BlocObserver {
   }
 
   @override
-  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+  void onError(IBloc bloc, Object error, StackTrace stackTrace) {
     print('onError -- bloc: ${bloc.runtimeType}, error: $error');
     super.onError(bloc, error, stackTrace);
   }
 
   @override
-  void onClose(BlocBase bloc) {
+  void onClose(IBloc bloc) {
     super.onClose(bloc);
     print('onClose -- bloc: ${bloc.runtimeType}');
   }

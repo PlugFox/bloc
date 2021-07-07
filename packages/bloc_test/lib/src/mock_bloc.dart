@@ -23,7 +23,7 @@ import 'package:mocktail/mocktail.dart';
 /// class MockCounterBloc extends MockBloc implements CounterBloc {}
 /// ```
 /// {@endtemplate}
-class MockBloc<E, S> extends _MockBlocBase<S> implements Bloc<E, S> {
+class MockBloc<E, S> extends _MockIBloc<S> implements Bloc<E, S> {
   /// {@macro mock_bloc}
   MockBloc() {
     when(() => mapEventToState(any())).thenAnswer((_) => Stream<S>.empty());
@@ -31,8 +31,8 @@ class MockBloc<E, S> extends _MockBlocBase<S> implements Bloc<E, S> {
   }
 }
 
-class _MockBlocBase<S> extends Mock implements BlocBase<S> {
-  _MockBlocBase() {
+class _MockIBloc<S> extends Mock implements IBloc<S> {
+  _MockIBloc() {
     registerFallbackValue<void Function(S)>((S _) {});
     registerFallbackValue<void Function()>(() {});
     when(

@@ -66,7 +66,7 @@ This design pattern helps to separate _presentation_ from _business logic_. Foll
 
 ![Bloc Architecture](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_architecture_full.png)
 
-A `Bloc` is a more advanced class which relies on `events` to trigger `state` changes rather than functions. `Bloc` also extends `BlocBase`. However, rather than calling a `function` on a `Bloc` and directly emitting a new `state`, `Blocs` receive `events` and convert the incoming `events` into outgoing `states`.
+A `Bloc` is a more advanced class which relies on `events` to trigger `state` changes rather than functions. `Bloc` also extends `IBloc`. However, rather than calling a `function` on a `Bloc` and directly emitting a new `state`, `Blocs` receive `events` and convert the incoming `events` into outgoing `states`.
 
 ![Bloc Flow](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_flow.png)
 
@@ -124,7 +124,7 @@ void main() async {
 
 #### Observing a Bloc
 
-Since all `Blocs` extend `BlocBase`, `onChange` and `onError` can be overridden in a `Bloc` as well.
+Since all `Blocs` extend `IBloc`, `onChange` and `onError` can be overridden in a `Bloc` as well.
 
 In addition, `Blocs` can also override `onEvent` and `onTransition`.
 
@@ -178,7 +178,7 @@ class CounterBloc extends Bloc<CounterEvent, int> {
 ```dart
 class MyBlocObserver extends BlocObserver {
   @override
-  void onCreate(BlocBase bloc) {
+  void onCreate(IBloc bloc) {
     super.onCreate(bloc);
     print('onCreate -- ${bloc.runtimeType}');
   }
@@ -190,7 +190,7 @@ class MyBlocObserver extends BlocObserver {
   }
 
   @override
-  void onChange(BlocBase bloc, Change change) {
+  void onChange(IBloc bloc, Change change) {
     super.onChange(bloc, change);
     print('onChange -- ${bloc.runtimeType}, $change');
   }
@@ -202,13 +202,13 @@ class MyBlocObserver extends BlocObserver {
   }
 
   @override
-  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+  void onError(IBloc bloc, Object error, StackTrace stackTrace) {
     print('onError -- ${bloc.runtimeType}, $error');
     super.onError(bloc, error, stackTrace);
   }
 
   @override
-  void onClose(BlocBase bloc) {
+  void onClose(IBloc bloc) {
     super.onClose(bloc);
     print('onClose -- ${bloc.runtimeType}');
   }

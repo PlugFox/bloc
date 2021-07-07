@@ -42,7 +42,7 @@ import 'package:mocktail/mocktail.dart';
 /// expect(counterBloc.state, equals(0));
 /// ```
 void whenListen<State>(
-  BlocBase<State> bloc,
+  IBloc<State> bloc,
   Stream<State> stream, {
   State? initialState,
 }) {

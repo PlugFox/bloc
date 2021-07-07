@@ -4,10 +4,10 @@
 
 # 7.0.0
 
-- **BREAKING**: refactor: `Bloc` and `Cubit` extend `BlocBase`
-  - refactor: `void onError(Cubit cubit, Object error, StackTrace stackTrace)` -> `void onError(BlocBase bloc, Object error, StackTrace stackTrace)`
-  - refactor: `void onCreate(Cubit cubit)` -> `void onCreate(BlocBase bloc)`
-  - refactor: `void onClose(Cubit cubit)` -> `void onClose(BlocBase bloc)`
+- **BREAKING**: refactor: `Bloc` and `Cubit` extend `IBloc`
+  - refactor: `void onError(Cubit cubit, Object error, StackTrace stackTrace)` -> `void onError(IBloc bloc, Object error, StackTrace stackTrace)`
+  - refactor: `void onCreate(Cubit cubit)` -> `void onCreate(IBloc bloc)`
+  - refactor: `void onClose(Cubit cubit)` -> `void onClose(IBloc bloc)`
 - **BREAKING**: refactor: `Bloc` and `Cubit` do not extend `Stream` and implement `Sink`
   - refactor: use `bloc.stream` or `cubit.stream` to access `Stream<State>`
     - `myBloc.map(...)` -> `myBloc.stream.map(...)`
@@ -21,10 +21,10 @@
 
 # 7.0.0-nullsafety.4
 
-- **BREAKING**: refactor: `Bloc` and `Cubit` extend `BlocBase`
-  - refactor: `void onError(Bloc bloc, Object error, StackTrace stackTrace)` -> `void onError(BlocBase bloc, Object error, StackTrace stackTrace)`
-  - refactor: `void onCreate(Bloc bloc)` -> `void onCreate(BlocBase bloc)`
-  - refactor: `void onClose(Bloc bloc)` -> `void onClose(BlocBase bloc)`
+- **BREAKING**: refactor: `Bloc` and `Cubit` extend `IBloc`
+  - refactor: `void onError(Bloc bloc, Object error, StackTrace stackTrace)` -> `void onError(IBloc bloc, Object error, StackTrace stackTrace)`
+  - refactor: `void onCreate(Bloc bloc)` -> `void onCreate(IBloc bloc)`
+  - refactor: `void onClose(Bloc bloc)` -> `void onClose(IBloc bloc)`
 - **BREAKING**: refactor: `Bloc` and `Cubit` do not extend `Stream` and implement `Sink`
   - refactor: use `bloc.stream` or `cubit.stream` to access `Stream<State>`
     - `myBloc.map(...)` -> `myBloc.stream.map(...)`
