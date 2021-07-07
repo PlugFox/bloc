@@ -32,10 +32,8 @@ class BlocUnhandledErrorException implements Exception {
   final StackTrace stackTrace;
 
   @override
-  String toString() {
-    return 'Unhandled error $error occurred in $bloc.\n'
-        '$stackTrace';
-  }
+  String toString() => 'Unhandled error $error occurred in $bloc.\n'
+      '$stackTrace';
 }
 
 /// {@template bloc}
@@ -54,35 +52,30 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   /// The current [BlocObserver] instance.
   static BlocObserver observer = BlocObserver();
 
-  StreamController<State>? __stateController;
-  StreamController<State> get _stateController {
-    return __stateController ??= StreamController<State>.broadcast();
-  }
-
-  State _state;
   @override
   State get state => _state;
-  @override
-  Stream<State> get stream => _stateController.stream;
-
-  bool _emitted = false;
-  StreamSubscription<Transition<Event, State>>? _transitionSubscription;
+  State _state;
 
   StreamController<Event>? __eventController;
-  StreamController<Event> get _eventController {
-    return __eventController ??= StreamController<Event>.broadcast();
-  }
+  StreamController<Event> get _eventController =>
+      __eventController ??= StreamController<Event>.broadcast();
 
   @override
-  void onChange(Change<State> change) {
-    // ignore: invalid_use_of_protected_member
-    Bloc.observer.onChange(this, change);
-  }
+  Stream<State> get stream => _stateController.stream;
+  StreamController<State>? __stateController;
+  StreamController<State> get _stateController =>
+      __stateController ??= StreamController<State>.broadcast();
+
+  StreamSubscription<Transition<Event, State>>? _transitionSubscription;
 
   @override
-  void addError(Object error, [StackTrace? stackTrace]) {
-    onError(error, stackTrace ?? StackTrace.current);
-  }
+  void onChange(Change<State> change) =>
+      // ignore: invalid_use_of_protected_member
+      Bloc.observer.onChange(this, change);
+
+  @override
+  void addError(Object error, [StackTrace? stackTrace]) =>
+      onError(error, stackTrace ?? StackTrace.current);
 
   @override
   void add(Event event) {
@@ -96,10 +89,9 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   }
 
   @override
-  void onEvent(Event event) {
-    // ignore: invalid_use_of_protected_member
-    observer.onEvent(this, event);
-  }
+  void onEvent(Event event) =>
+      // ignore: invalid_use_of_protected_member
+      observer.onEvent(this, event);
 
   @override
   void onError(Object error, StackTrace stackTrace) {
@@ -120,11 +112,9 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   @override
   void emit(State state) {
     if (_stateController.isClosed) return;
-    if (state == _state && _emitted) return;
     onChange(Change<State>(currentState: this.state, nextState: state));
     _state = state;
     _stateController.add(_state);
-    _emitted = true;
   }
 
   @override
@@ -154,31 +144,28 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   @override
   Future<void> get done => _eventController.done;
 
-  void _bindEventsToStates() {
-    _transitionSubscription = transformTransitions(
-      transformEvents(
-        _eventController.stream,
-        (event) => mapEventToState(event).map(
-          (nextState) => Transition(
-            currentState: state,
-            event: event,
-            nextState: nextState,
+  void _bindEventsToStates() => _transitionSubscription = transformTransitions(
+        transformEvents(
+          _eventController.stream,
+          (event) => mapEventToState(event).map(
+            (nextState) => Transition(
+              currentState: state,
+              event: event,
+              nextState: nextState,
+            ),
           ),
         ),
-      ),
-    ).listen(
-      (transition) {
-        if (transition.nextState == state && _emitted) return;
-        try {
-          onTransition(transition);
-          emit(transition.nextState);
-        } catch (error, stackTrace) {
-          onError(error, stackTrace);
-        }
-      },
-      onError: onError,
-    );
-  }
+      ).listen(
+        (transition) {
+          try {
+            onTransition(transition);
+            emit(transition.nextState);
+          } catch (error, stackTrace) {
+            onError(error, stackTrace);
+          }
+        },
+        onError: onError,
+      );
 }
 
 /// {@template i_bloc}
