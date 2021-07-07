@@ -36,8 +36,8 @@ mixin BlocProviderSingleChildWidget on SingleChildWidget {}
 /// ```
 ///
 /// {@endtemplate}
-class BlocProvider<T extends ISub<Object?>> extends SingleChildStatelessWidget
-    with BlocProviderSingleChildWidget {
+class BlocProvider<T extends ISubscriber<Object?>>
+    extends SingleChildStatelessWidget with BlocProviderSingleChildWidget {
   /// {@macro bloc_provider}
   BlocProvider({
     Key? key,
@@ -94,7 +94,7 @@ class BlocProvider<T extends ISub<Object?>> extends SingleChildStatelessWidget
   /// ```dart
   /// BlocProvider.of<BlocA>(context);
   /// ```
-  static T of<T extends ISub<Object?>>(
+  static T of<T extends ISubscriber<Object?>>(
     BuildContext context, {
     bool listen = false,
   }) {
@@ -139,8 +139,8 @@ class BlocProvider<T extends ISub<Object?>> extends SingleChildStatelessWidget
   }
 
   static VoidCallback _startListening(
-    InheritedContext<ISub> e,
-    ISub value,
+    InheritedContext<ISubscriber> e,
+    ISubscriber value,
   ) {
     final subscription = value.stream.listen(
       (Object? _) => e.markNeedsNotifyDependents(),

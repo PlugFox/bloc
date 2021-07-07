@@ -71,7 +71,7 @@ typedef BlocBuilderCondition<S> = bool Function(S previous, S current);
 /// )
 /// ```
 /// {@endtemplate}
-class BlocBuilder<B extends ISub<S>, S> extends BlocBuilderBase<B, S> {
+class BlocBuilder<B extends ISubscriber<S>, S> extends BlocBuilderBase<B, S> {
   /// {@macro bloc_builder}
   /// {@macro bloc_builder_build_when}
   const BlocBuilder({
@@ -99,7 +99,8 @@ class BlocBuilder<B extends ISub<S>, S> extends BlocBuilderBase<B, S> {
 /// so far. The type of the state and how it is updated with each interaction
 /// is defined by sub-classes.
 /// {@endtemplate}
-abstract class BlocBuilderBase<B extends ISub<S>, S> extends StatefulWidget {
+abstract class BlocBuilderBase<B extends ISubscriber<S>, S>
+    extends StatefulWidget {
   /// {@macro bloc_builder_base}
   const BlocBuilderBase({Key? key, this.bloc, this.buildWhen})
       : super(key: key);
@@ -119,7 +120,7 @@ abstract class BlocBuilderBase<B extends ISub<S>, S> extends StatefulWidget {
   State<BlocBuilderBase<B, S>> createState() => _BlocBuilderBaseState<B, S>();
 }
 
-class _BlocBuilderBaseState<B extends ISub<S>, S>
+class _BlocBuilderBaseState<B extends ISubscriber<S>, S>
     extends State<BlocBuilderBase<B, S>> {
   late B _bloc;
   late S _state;
