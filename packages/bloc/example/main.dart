@@ -43,27 +43,7 @@ class SimpleBlocObserver extends BlocObserver {
 void main() {
   Bloc.observer = SimpleBlocObserver();
 
-  cubitMain();
   blocMain();
-}
-
-void cubitMain() {
-  print('----------CUBIT----------');
-
-  /// Create a `CounterCubit` instance.
-  final cubit = CounterCubit();
-
-  /// Access the state of the `cubit` via `state`.
-  print(cubit.state); // 0
-
-  /// Interact with the `cubit` to trigger `state` changes.
-  cubit.increment();
-
-  /// Access the new `state`.
-  print(cubit.state); // 1
-
-  /// Close the `cubit` when it is no longer needed.
-  cubit.close();
 }
 
 void blocMain() async {
@@ -87,17 +67,6 @@ void blocMain() async {
 
   /// Close the `bloc` when it is no longer needed.
   await bloc.close();
-}
-
-/// A `CounterCubit` which manages an `int` as its state.
-class CounterCubit extends Cubit<int> {
-  /// The initial state of the `CounterCubit` is 0.
-  CounterCubit() : super(0);
-
-  /// When increment is called, the current state
-  /// of the cubit is accessed via `state` and
-  /// a new `state` is emitted via `emit`.
-  void increment() => emit(state + 1);
 }
 
 /// The events which `CounterBloc` will react to.

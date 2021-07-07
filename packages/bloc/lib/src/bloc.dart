@@ -245,32 +245,8 @@ abstract class Bloc<Event, State> extends BlocBase<State> {
   }
 }
 
-/// {@template cubit}
-/// A [Cubit] is similar to [Bloc] but has no notion of events
-/// and relies on methods to [emit] new states.
-///
-/// Every [Cubit] requires an initial state which will be the
-/// state of the [Cubit] before [emit] has been called.
-///
-/// The current state of a [Cubit] can be accessed via the [state] getter.
-///
-/// ```dart
-/// class CounterCubit extends Cubit<int> {
-///   CounterCubit() : super(0);
-///
-///   void increment() => emit(state + 1);
-/// }
-/// ```
-///
-/// {@endtemplate}
-abstract class Cubit<State> extends BlocBase<State> {
-  /// {@macro cubit}
-  Cubit(State initialState) : super(initialState);
-}
-
 /// {@template bloc_stream}
-/// An interface for the core functionality implemented by
-/// both [Bloc] and [Cubit].
+/// An interface for the core functionality implemented by [Bloc].
 /// {@endtemplate}
 abstract class BlocBase<State> {
   /// {@macro bloc_stream}
@@ -349,7 +325,7 @@ abstract class BlocBase<State> {
   ///
   /// See also:
   ///
-  /// * [BlocObserver] for observing [Cubit] behavior globally.
+  /// * [BlocObserver] for observing [Bloc] behavior globally.
   @mustCallSuper
   void onChange(Change<State> change) {
     // ignore: invalid_use_of_protected_member

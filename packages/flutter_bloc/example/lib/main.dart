@@ -35,22 +35,12 @@ void main() {
 /// to manage the state of a counter.
 class App extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ThemeCubit(),
-      child: BlocBuilder<ThemeCubit, ThemeData>(
-        builder: (_, theme) {
-          return MaterialApp(
-            theme: theme,
-            home: BlocProvider(
-              create: (_) => CounterBloc(),
-              child: CounterPage(),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+        home: BlocProvider(
+          create: (_) => CounterBloc(),
+          child: CounterPage(),
+        ),
+      );
 }
 
 /// A [StatelessWidget] which demonstrates
@@ -85,13 +75,6 @@ class CounterPage extends StatelessWidget {
               child: const Icon(Icons.remove),
               onPressed: () =>
                   context.read<CounterBloc>().add(CounterEvent.decrement),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.brightness_6),
-              onPressed: () => context.read<ThemeCubit>().toggleTheme(),
             ),
           ),
           Padding(
@@ -140,32 +123,5 @@ class CounterBloc extends Bloc<CounterEvent, int> {
       case CounterEvent.error:
         addError(Exception('unsupported event'));
     }
-  }
-}
-
-/// {@template brightness_cubit}
-/// A simple [Cubit] which manages the [ThemeData] as its state.
-/// {@endtemplate}
-class ThemeCubit extends Cubit<ThemeData> {
-  /// {@macro brightness_cubit}
-  ThemeCubit() : super(_lightTheme);
-
-  static final _lightTheme = ThemeData(
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      foregroundColor: Colors.white,
-    ),
-    brightness: Brightness.light,
-  );
-
-  static final _darkTheme = ThemeData(
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      foregroundColor: Colors.black,
-    ),
-    brightness: Brightness.dark,
-  );
-
-  /// Toggles the current brightness between light and dark.
-  void toggleTheme() {
-    emit(state.brightness == Brightness.dark ? _lightTheme : _darkTheme);
   }
 }

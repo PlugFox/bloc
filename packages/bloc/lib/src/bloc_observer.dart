@@ -33,7 +33,7 @@ class BlocObserver {
   @mustCallSuper
   void onTransition(Bloc bloc, Transition transition) {}
 
-  /// Called whenever an [error] is thrown in any [Bloc] or [Cubit].
+  /// Called whenever an [error] is thrown in any [Bloc].
   /// The [stackTrace] argument may be [StackTrace.empty] if an error
   /// was received without a stack trace.
   @protected
