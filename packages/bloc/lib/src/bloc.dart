@@ -374,5 +374,6 @@ abstract class Bloc<Event extends Object?, State extends Object?>
           }
         },
         onError: onError,
+        cancelOnError: false,
       );
 }
