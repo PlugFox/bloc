@@ -12,10 +12,11 @@ import 'transition.dart';
 typedef TransitionFunction<Event, State> = Stream<Transition<Event, State>>
     Function(Event event);
 
-/// {@template i_pub}
-/// Publisher to implement the Publisher/Subscriber pattern
+/// {@template i_bloc_sink}
+/// An interface for the core functionality implemented by [IBloc].
+/// BLoC Sink to implement the Publisher/Subscriber pattern
 /// {@endtemplate}
-abstract class IPublisher<Event extends Object?> implements StreamSink<Event> {
+abstract class IBlocSink<Event extends Object?> implements StreamSink<Event> {
   /// Reports an [error] which triggers [onError] with an optional [StackTrace].
 
   @override
@@ -90,21 +91,24 @@ abstract class IPublisher<Event extends Object?> implements StreamSink<Event> {
   Future<void> get done;
 }
 
-/// {@template i_subject}
-/// Subject to implement the Observer (Dependents) pattern
+/// {@template i_state_observable}
+/// An interface for the core functionality implemented by [IBlocSubject].
+/// State subject to implement the Observer (Dependents) pattern
 /// {@endtemplate}
-abstract class ISubject<T extends Object?> {
+abstract class IStateObservable<T extends Object?> {
   /// The current [state].
   T get state;
 
-  /// The current state stream.
+  /// The state stream.
   StateStream<T> get stream;
 }
 
-/// {@template i_sub}
-/// Subscriber to implement the Publisher/Subscriber pattern
+/// {@template i_bloc_subject}
+/// An interface for the core functionality implemented by [IBloc].
+/// BLoC Subject to implement the Publisher/Subscriber pattern
 /// {@endtemplate}
-abstract class ISubscriber<State extends Object?> implements ISubject<State> {
+abstract class IBlocSubject<State extends Object?>
+    implements IStateObservable<State> {
   /// Updates the [state] to the provided [state].
   /// [setState] does nothing if the instance has been closed.
   @protected
@@ -142,7 +146,7 @@ abstract class ISubscriber<State extends Object?> implements ISubject<State> {
 /// and transforms them into a `Stream` of `States` as output.
 /// {@endtemplate}
 abstract class IBloc<Event extends Object?, State extends Object?>
-    implements IPublisher<Event>, ISubscriber<State> {
+    implements IBlocSink<Event>, IBlocSubject<State> {
   /// Notifies the [Bloc] of a new [event] which triggers [mapEventToState].
   /// If [close] has already been called, any subsequent calls to [add] will
   /// be ignored and will not result in any subsequent state changes.
