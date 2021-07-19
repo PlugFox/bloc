@@ -336,15 +336,15 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   void onEvent(Event event) => _ObserverManager.observer?.onEvent(this, event);
 
   @override
-  void onError(Object error, [StackTrace? stackTrace]) {
+  void onError(Object error, StackTrace stackTrace) {
     _ObserverManager.observer?.onError(
       this,
       error,
-      stackTrace ?? StackTrace.current,
+      stackTrace,
     );
     assert(_throwUnhandledException(
       error,
-      stackTrace ?? StackTrace.current,
+      stackTrace,
     ));
   }
 
