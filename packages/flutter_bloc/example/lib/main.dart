@@ -24,10 +24,10 @@ class SimpleBlocObserver extends IBlocObserver {
   }
 }
 
-void main() {
-  Bloc.observer = SimpleBlocObserver();
-  runApp(App());
-}
+void main() => Bloc.observe(
+      () => runApp(App()),
+      observer: SimpleBlocObserver(),
+    );
 
 /// A [StatelessWidget] which uses:
 /// * [bloc](https://pub.dev/packages/bloc)

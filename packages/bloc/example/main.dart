@@ -40,11 +40,10 @@ class SimpleBlocObserver extends IBlocObserver {
   }
 }
 
-void main() {
-  Bloc.observer = SimpleBlocObserver();
-
-  blocMain();
-}
+void main() => Bloc.observe(
+      blocMain,
+      observer: SimpleBlocObserver(),
+    );
 
 void blocMain() async {
   print('----------BLOC----------');

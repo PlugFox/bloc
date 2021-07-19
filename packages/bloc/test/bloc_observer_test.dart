@@ -16,43 +16,81 @@ void main() {
     group('onCreate', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        IBlocObserver().onCreate(bloc);
+        SimpleBlocObserver().onCreate(bloc);
       });
     });
 
     group('onEvent', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        IBlocObserver().onEvent(bloc, event);
+        SimpleBlocObserver().onEvent(bloc, event);
       });
     });
 
     group('onChange', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        IBlocObserver().onChange(bloc, change);
+        SimpleBlocObserver().onChange(bloc, change);
       });
     });
 
     group('onTransition', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        IBlocObserver().onTransition(bloc, transition);
+        SimpleBlocObserver().onTransition(bloc, transition);
       });
     });
 
     group('onError', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        IBlocObserver().onError(bloc, event, StackTrace.current);
+        SimpleBlocObserver().onError(bloc, event, StackTrace.current);
       });
     });
 
     group('onClose', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        IBlocObserver().onClose(bloc);
+        SimpleBlocObserver().onClose(bloc);
       });
     });
   });
+}
+
+class SimpleBlocObserver extends IBlocObserver {
+  @override
+  void onCreate(IBloc bloc) {
+    super.onCreate(bloc);
+    print('onCreate -- bloc: ${bloc.runtimeType}');
+  }
+
+  @override
+  void onEvent(IBloc bloc, Object? event) {
+    super.onEvent(bloc, event);
+    print('onEvent -- bloc: ${bloc.runtimeType}, event: $event');
+  }
+
+  @override
+  void onChange(IBloc bloc, Change change) {
+    super.onChange(bloc, change);
+    print('onChange -- bloc: ${bloc.runtimeType}, change: $change');
+  }
+
+  @override
+  void onTransition(IBloc bloc, Transition transition) {
+    super.onTransition(bloc, transition);
+    print('onTransition -- bloc: ${bloc.runtimeType}, transition: $transition');
+  }
+
+  @override
+  void onError(IBloc bloc, Object error, StackTrace stackTrace) {
+    print('onError -- bloc: ${bloc.runtimeType}, error: $error');
+    super.onError(bloc, error, stackTrace);
+  }
+
+  @override
+  void onClose(IBloc bloc) {
+    super.onClose(bloc);
+    print('onClose -- bloc: ${bloc.runtimeType}');
+  }
 }

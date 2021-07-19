@@ -20,20 +20,30 @@ void main() {
       setUp(() {
         simpleBloc = SimpleBloc();
         observer = MockBlocObserver();
-        Bloc.observer = observer;
+        //Bloc.observer = observer;
       });
 
       test('triggers onCreate on observer when instantiated', () {
-        final bloc = SimpleBloc();
+        Bloc? bloc;
+        Bloc.observe(
+          () => bloc = SimpleBloc(),
+          observer: observer,
+        );
         // ignore: invalid_use_of_protected_member
-        verify(() => observer.onCreate(bloc)).called(1);
+        verify(() => observer.onCreate(bloc!)).called(1);
       });
 
       test('triggers onClose on observer when closed', () async {
-        final bloc = SimpleBloc();
-        await bloc.close();
+        Bloc? bloc;
+        await Bloc.observe(
+          () async {
+            bloc = SimpleBloc();
+            await bloc!.close();
+          },
+          observer: observer,
+        );
         // ignore: invalid_use_of_protected_member
-        verify(() => observer.onClose(bloc)).called(1);
+        verify(() => observer.onClose(bloc!)).called(1);
       });
 
       test('close does not emit new states over the state stream', () async {
@@ -146,7 +156,6 @@ void main() {
       setUp(() {
         complexBloc = ComplexBloc();
         observer = MockBlocObserver();
-        Bloc.observer = observer;
       });
 
       test('close does not emit new states over the state stream', () async {
@@ -259,7 +268,6 @@ void main() {
           },
         );
         observer = MockBlocObserver();
-        Bloc.observer = observer;
       });
 
       test('state returns correct value initially', () {
@@ -416,7 +424,6 @@ void main() {
       setUp(() {
         asyncBloc = AsyncBloc();
         observer = MockBlocObserver();
-        Bloc.observer = observer;
       });
 
       test('close does not emit new states over the state stream', () async {
