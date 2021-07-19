@@ -15,17 +15,34 @@ typedef TransitionFunction<Event, State> = Stream<Transition<Event, State>>
     Function(Event event);
 
 /// {@template i_bloc_sink}
-/// An interface for the core functionality implemented by [IBloc].
-/// BLoC Sink to implement the Publisher/Subscriber pattern
+/// A [Bloc] Sink interface that accepts events both synchronously
+/// and asynchronously.
+///
+/// The [IBlocSink] methods can't be used while the [addStream] is called.
+/// As soon as the [addStream]'s [Future] completes with a value, the
+/// [EventSink] methods can be used again.
+///
+/// If [addStream] is called after any of the [EventSink] methods, it'll
+/// be delayed until the underlying system has consumed the data added by the
+/// [EventSink] methods.
+///
+/// When [EventSink] methods are used, the [done] [Future] can be used to
+/// catch any errors.
+///
+/// When [close] is called, it will return the [done] [Future].
 /// {@endtemplate}
 abstract class IBlocSink<Event extends Object?> implements StreamSink<Event> {
   /// Reports an [error] which triggers [onError] with an optional [StackTrace].
-
+  /// If [close] has already been called, any subsequent calls to [addError]
+  /// will be ignored and will not result in any subsequent state changes.
   @override
   @protected
   @mustCallSuper
   void addError(Object error, [StackTrace? stackTrace]);
 
+  /// Notifies the [Bloc] of a new [event]
+  /// If [close] has already been called, any subsequent calls to [add] will
+  /// be ignored and will not result in any subsequent state changes.
   @override
   void add(Event event);
 
@@ -86,15 +103,30 @@ abstract class IBlocSink<Event extends Object?> implements StreamSink<Event> {
   @visibleForOverriding
   Future<void> close();
 
+  /// Pass all [eventStream] events to the [Bloc]
+  /// If [close] has already been called, any subsequent calls to [addStream]
+  /// will be ignored and will not result in any subsequent state changes.
   @override
   Future<void> addStream(Stream<Event> eventStream);
 
+  /// Return a future which is completed when the [IBlocSink] is finished.
+  ///
+  /// If the `IBlocSink` fails with an error,
+  /// perhaps in response to adding events using [add], [addStream], [addError]
+  /// or [close], the [done] future will complete with that error.
+  ///
+  /// Otherwise, the returned future will complete when either:
+  ///
+  /// * all events have been processed and the sink has been closed, or
+  /// * the sink has otherwise been stopped from handling more events
+  ///   (for example by canceling a stream subscription).
   @override
   Future<void> get done;
 }
 
 /// {@template i_state_observable}
-/// An interface for the core functionality implemented by [IBlocSubject].
+/// An interface to observe states stream.
+/// Current [state] available as property.
 /// State subject to implement the Observer (Dependents) pattern
 /// {@endtemplate}
 abstract class IStateObservable<T extends Object?> {
@@ -106,8 +138,9 @@ abstract class IStateObservable<T extends Object?> {
 }
 
 /// {@template i_bloc_subject}
-/// An interface for the core functionality implemented by [IBloc].
-/// BLoC Subject to implement the Publisher/Subscriber pattern
+/// Interface to observe states stream.
+/// Current [state] available as property.
+/// [Bloc] Subject to implement the Publisher/Subscriber pattern
 /// {@endtemplate}
 abstract class IBlocSubject<State extends Object?>
     implements IStateObservable<State> {
@@ -143,18 +176,12 @@ abstract class IBlocSubject<State extends Object?>
 }
 
 /// {@template i_bloc}
-/// An interface for the core functionality implemented by [Bloc].
+/// An interface to implement the Publisher/Subscriber pattern for [Bloc].
 /// Takes a `Stream` of `Events` as input
 /// and transforms them into a `Stream` of `States` as output.
 /// {@endtemplate}
 abstract class IBloc<Event extends Object?, State extends Object?>
     implements IBlocSink<Event>, IBlocSubject<State> {
-  /// Notifies the [Bloc] of a new [event] which triggers [mapEventToState].
-  /// If [close] has already been called, any subsequent calls to [add] will
-  /// be ignored and will not result in any subsequent state changes.
-  @override
-  void add(Event event);
-
   /// Transforms the [events] stream along with a [transitionFn] function into
   /// a `Stream<Transition>`.
   /// Events that should be processed by [mapEventToState] need to be passed to
