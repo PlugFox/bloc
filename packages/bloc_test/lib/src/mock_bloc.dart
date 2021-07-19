@@ -23,7 +23,7 @@ import 'package:mocktail/mocktail.dart';
 /// class MockCounterBloc extends MockBloc implements CounterBloc {}
 /// ```
 /// {@endtemplate}
-class MockBloc<E, S> extends _MockBlocBase<S> implements Bloc<E, S> {
+class MockBloc<E, S> extends _MockIBloc<E, S> implements Bloc<E, S> {
   /// {@macro mock_bloc}
   MockBloc() {
     when(() => mapEventToState(any())).thenAnswer((_) => Stream<S>.empty());
@@ -31,37 +31,12 @@ class MockBloc<E, S> extends _MockBlocBase<S> implements Bloc<E, S> {
   }
 }
 
-/// {@template mock_cubit}
-/// Extend or mixin this class to mark the implementation as a [MockCubit].
-///
-/// A mocked cubit implements all fields and methods with a default
-/// implementation that does not throw a [NoSuchMethodError],
-/// and may be further customized at runtime to define how it may behave using
-/// [when] and `whenListen`.
-///
-/// _**Note**: It is critical to explicitly provide the state
-/// types when extending [MockCubit]_.
-///
-/// **GOOD**
-/// ```dart
-/// class MockCounterCubit extends MockCubit<int>
-///   implements CounterCubit {}
-/// ```
-///
-/// **BAD**
-/// ```dart
-/// class MockCounterCubit extends MockBloc implements CounterCubit {}
-/// ```
-/// {@endtemplate}
-class MockCubit<S> extends _MockBlocBase<S> implements Cubit<S> {}
-
-class _MockBlocBase<S> extends Mock implements BlocBase<S> {
-  _MockBlocBase() {
+class _MockIBloc<E, S> extends Mock implements IBloc<E, S> {
+  _MockIBloc() {
     registerFallbackValue<void Function(S)>((S _) {});
     registerFallbackValue<void Function()>(() {});
     when(
-      // ignore: deprecated_member_use
-      () => listen(
+      () => stream.listen(
         any(),
         onDone: any(named: 'onDone'),
         onError: any(named: 'onError'),
@@ -75,8 +50,8 @@ class _MockBlocBase<S> extends Mock implements BlocBase<S> {
         cancelOnError: invocation.namedArguments[#cancelOnError] as bool?,
       );
     });
-    when(() => stream).thenAnswer((_) => Stream<S>.empty());
+    when(() => stream.toStream()).thenAnswer((_) => Stream<S>.empty());
     when(close).thenAnswer((_) => Future<void>.value());
-    when(() => emit(any())).thenReturn(null);
+    when(() => setState(any())).thenReturn(null);
   }
 }

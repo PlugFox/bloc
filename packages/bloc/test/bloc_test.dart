@@ -7,9 +7,9 @@ import 'package:test/test.dart';
 
 import 'blocs/blocs.dart';
 
-class MockBlocObserver extends Mock implements BlocObserver {}
+class MockBlocObserver extends Mock implements IBlocObserver {}
 
-class FakeBlocBase<S> extends Fake implements BlocBase<S> {}
+class FakeSub<S> extends Fake implements IBlocSubject<S> {}
 
 void main() {
   group('Bloc Tests', () {
@@ -409,7 +409,7 @@ void main() {
       late MockBlocObserver observer;
 
       setUpAll(() {
-        registerFallbackValue<BlocBase<dynamic>>(FakeBlocBase<dynamic>());
+        registerFallbackValue<IBlocSubject<dynamic>>(FakeSub<dynamic>());
         registerFallbackValue<StackTrace>(StackTrace.empty);
       });
 
@@ -437,8 +437,7 @@ void main() {
         final states = <AsyncState>[];
 
         asyncBloc
-          // ignore: deprecated_member_use_from_same_package
-          ..listen(states.add)
+          ..stream.listen(states.add)
           ..add(AsyncEvent());
 
         await asyncBloc.close();
@@ -940,7 +939,7 @@ void main() {
         unawaited(
           expectLater(counterBloc.stream, emitsInOrder(const <int>[42])),
         );
-        counterBloc.emit(42);
+        counterBloc.setState(42);
         expect(counterBloc.state, 42);
         await counterBloc.close();
       });

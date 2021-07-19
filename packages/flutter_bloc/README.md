@@ -1,3 +1,4 @@
+<!--
 <p align="right">
 <a href="https://flutter.dev/docs/development/packages-and-plugins/favorites"><img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/flutter_favorite.png" width="100" alt="build"></a>
 </p>
@@ -22,11 +23,11 @@
 
 ---
 
-Widgets that make it easy to integrate blocs and cubits into [Flutter](https://flutter.dev). Built to work with [package:bloc](https://pub.dev/packages/bloc).
+Widgets that make it easy to integrate blocs into [Flutter](https://flutter.dev). Built to work with [package:bloc](https://pub.dev/packages/bloc).
 
 **Learn more at [bloclibrary.dev](https://bloclibrary.dev)!**
 
-_\*Note: All widgets exported by the `flutter_bloc` package integrate with both `Cubit` and `Bloc` instances._
+_\*Note: All widgets exported by the `flutter_bloc` package integrate with `Bloc` instances._
 
 ---
 
@@ -48,59 +49,6 @@ Our top sponsors are shown below! [[Become a Sponsor](https://github.com/sponsor
 </table>
 
 ---
-
-## Usage
-
-Lets take a look at how to use `BlocBuilder` to hook up a `CounterPage` widget to a `CounterCubit`.
-
-### counter_cubit.dart
-
-```dart
-class CounterCubit extends Cubit<int> {
-  CounterCubit() : super(0);
-
-  void increment() => emit(state + 1);
-  void decrement() => emit(state - 1);
-}
-```
-
-### counter_page.dart
-
-```dart
-class CounterPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Counter')),
-      body: BlocBuilder<CounterCubit, int>(
-        builder: (context, count) => Center(child: Text('$count')),
-      ),
-      floatingActionButton: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () => context.read<CounterCubit>().increment(),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.remove),
-              onPressed: () => context.read<CounterCubit>().decrement(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-```
-
-At this point we have successfully separated our presentational layer from our business logic layer. Notice that the `CounterPage` widget knows nothing about what happens when a user taps the buttons. The widget simply tells the `CounterCubit` that the user has pressed either the increment or decrement button.
 
 ## Bloc Widgets
 
@@ -493,3 +441,4 @@ MultiRepositoryProvider(
 ## Maintainers
 
 - [Felix Angelov](https://github.com/felangel)
+-->

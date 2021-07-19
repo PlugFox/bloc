@@ -1,3 +1,4 @@
+<!--
 # Contributing to Bloc
 
 👍🎉 First off, thanks for taking the time to contribute! 🎉👍
@@ -120,3 +121,4 @@ on [Discord](https://discord.gg/bloc).
 
 By contributing to Bloc, you agree that your contributions will be licensed
 under its [MIT license](LICENSE).
+-->

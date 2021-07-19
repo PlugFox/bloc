@@ -1,3 +1,6 @@
+# **W I P**
+
+<!--
 <p align="center">
 <img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_logo_full.png" height="100" alt="Bloc" />
 </p>
@@ -158,7 +161,7 @@ The goal of this library is to make it easy to separate _presentation_ from _bus
 
 ## Books
 
-- [Flutter Complete Reference](https://fluttercompletereference.com/) - A book about the Dart programming language (version 2.10, with null safety support) and the Flutter framework (version 1.20). It covers the bloc package (version 6.0.3) in all flavors: bloc, flutter_bloc hydrated_bloc, replay_bloc, bloc_test and cubit.
+- [Flutter Complete Reference](https://fluttercompletereference.com/) - A book about the Dart programming language (version 2.10, with null safety support) and the Flutter framework (version 1.20). It covers the bloc package (version 6.0.3) in all flavors: bloc, flutter_bloc hydrated_bloc, replay_bloc, bloc_test.
 
 ## Extensions
 
@@ -202,3 +205,4 @@ Learn more at the following links, which have been contributed by the community.
 ## Maintainers
 
 - [Felix Angelov](https://github.com/felangel)
+-->

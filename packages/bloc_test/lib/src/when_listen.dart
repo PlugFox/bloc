@@ -42,7 +42,7 @@ import 'package:mocktail/mocktail.dart';
 /// expect(counterBloc.state, equals(0));
 /// ```
 void whenListen<State>(
-  BlocBase<State> bloc,
+  IStateObservable<State> bloc,
   Stream<State> stream, {
   State? initialState,
 }) {
@@ -53,8 +53,7 @@ void whenListen<State>(
   }
 
   when(
-    // ignore: deprecated_member_use
-    () => bloc.listen(
+    () => bloc.stream.listen(
       any(),
       onDone: any(named: 'onDone'),
       onError: any(named: 'onError'),
@@ -72,7 +71,7 @@ void whenListen<State>(
     );
   });
 
-  when(() => bloc.stream).thenAnswer(
+  when(() => bloc.stream.toStream()).thenAnswer(
     (_) => broadcastStream.map((state) {
       when(() => bloc.state).thenReturn(state);
       return state;

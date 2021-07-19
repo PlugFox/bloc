@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -9,10 +11,10 @@ mixin BlocProviderSingleChildWidget on SingleChildWidget {}
 
 /// {@template bloc_provider}
 /// Takes a [Create] function that is responsible for
-/// creating the [Bloc] or [Cubit] and a [child] which will have access
+/// creating the [Bloc] and a [child] which will have access
 /// to the instance via `BlocProvider.of(context)`.
 /// It is used as a dependency injection (DI) widget so that a single instance
-/// of a [Bloc] or [Cubit] can be provided to multiple widgets within a subtree.
+/// of a [Bloc] can be provided to multiple widgets within a subtree.
 ///
 /// ```dart
 /// BlocProvider(
@@ -34,7 +36,7 @@ mixin BlocProviderSingleChildWidget on SingleChildWidget {}
 /// ```
 ///
 /// {@endtemplate}
-class BlocProvider<T extends BlocBase<Object?>>
+class BlocProvider<T extends IStateObservable<Object?>>
     extends SingleChildStatelessWidget with BlocProviderSingleChildWidget {
   /// {@macro bloc_provider}
   BlocProvider({
@@ -48,12 +50,12 @@ class BlocProvider<T extends BlocBase<Object?>>
 
   /// Takes a [value] and a [child] which will have access to the [value] via
   /// `BlocProvider.of(context)`.
-  /// When `BlocProvider.value` is used, the [Bloc] or [Cubit]
+  /// When `BlocProvider.value` is used, the [Bloc]
   /// will not be automatically closed.
   /// As a result, `BlocProvider.value` should only be used for providing
   /// existing instances to new subtrees.
   ///
-  /// A new [Bloc] or [Cubit] should not be created in `BlocProvider.value`.
+  /// A new [Bloc] should not be created in `BlocProvider.value`.
   /// New instances should always be created using the
   /// default constructor within the [Create] function.
   ///
@@ -72,10 +74,10 @@ class BlocProvider<T extends BlocBase<Object?>>
         lazy = null,
         super(key: key, child: child);
 
-  /// Widget which will have access to the [Bloc] or [Cubit].
+  /// Widget which will have access to the [Bloc].
   final Widget? child;
 
-  /// Whether the [Bloc] or [Cubit] should be created lazily.
+  /// Whether the [Bloc] should be created lazily.
   /// Defaults to `true`.
   final bool? lazy;
 
@@ -83,7 +85,7 @@ class BlocProvider<T extends BlocBase<Object?>>
 
   final T? _value;
 
-  /// Method that allows widgets to access a [Bloc] or [Cubit] instance
+  /// Method that allows widgets to access a [Bloc] instance
   /// as long as their `BuildContext` contains a [BlocProvider] instance.
   ///
   /// If we want to access an instance of `BlocA` which was provided higher up
@@ -92,7 +94,7 @@ class BlocProvider<T extends BlocBase<Object?>>
   /// ```dart
   /// BlocProvider.of<BlocA>(context);
   /// ```
-  static T of<T extends BlocBase<Object?>>(
+  static T of<T extends IStateObservable<Object?>>(
     BuildContext context, {
     bool listen = false,
   }) {
@@ -125,7 +127,11 @@ class BlocProvider<T extends BlocBase<Object?>>
           )
         : InheritedProvider<T>(
             create: _create,
-            dispose: (_, bloc) => bloc.close(),
+            dispose: (_, bloc) {
+              if (bloc is StreamConsumer || bloc is Sink || bloc is IBlocSink) {
+                (bloc as dynamic).close();
+              }
+            },
             startListening: _startListening,
             child: child,
             lazy: lazy,
@@ -133,11 +139,11 @@ class BlocProvider<T extends BlocBase<Object?>>
   }
 
   static VoidCallback _startListening(
-    InheritedContext<BlocBase> e,
-    BlocBase value,
+    InheritedContext<IStateObservable> e,
+    IStateObservable value,
   ) {
     final subscription = value.stream.listen(
-      (dynamic _) => e.markNeedsNotifyDependents(),
+      (Object? _) => e.markNeedsNotifyDependents(),
     );
     return subscription.cancel;
   }

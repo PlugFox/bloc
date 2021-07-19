@@ -1,3 +1,4 @@
+<!--
 <p align="right">
 <a href="https://flutter.dev/docs/development/packages-and-plugins/favorites"><img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/flutter_favorite.png" width="100" alt="build"></a>
 </p>
@@ -61,120 +62,11 @@ The goal of this package is to make it easy to implement the `BLoC` Design Patte
 
 This design pattern helps to separate _presentation_ from _business logic_. Following the BLoC pattern facilitates testability and reusability. This package abstracts reactive aspects of the pattern allowing developers to focus on writing the business logic.
 
-### Cubit
-
-![Cubit Architecture](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/cubit_architecture_full.png)
-
-A `Cubit` is class which extends `BlocBase` and can be extended to manage any type of state. `Cubit` requires an initial state which will be the state before `emit` has been called. The current state of a `cubit` can be accessed via the `state` getter and the state of the `cubit` can be updated by calling `emit` with a new `state`.
-
-![Cubit Flow](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/cubit_flow.png)
-
-State changes in cubit begin with predefined function calls which can use the `emit` method to output new states. `onChange` is called right before a state change occurs and contains the current and next state.
-
-#### Creating a Cubit
-
-```dart
-/// A `CounterCubit` which manages an `int` as its state.
-class CounterCubit extends Cubit<int> {
-  /// The initial state of the `CounterCubit` is 0.
-  CounterCubit() : super(0);
-
-  /// When increment is called, the current state
-  /// of the cubit is accessed via `state` and
-  /// a new `state` is emitted via `emit`.
-  void increment() => emit(state + 1);
-}
-```
-
-#### Using a Cubit
-
-```dart
-void main() {
-  /// Create a `CounterCubit` instance.
-  final cubit = CounterCubit();
-
-  /// Access the state of the `cubit` via `state`.
-  print(cubit.state); // 0
-
-  /// Interact with the `cubit` to trigger `state` changes.
-  cubit.increment();
-
-  /// Access the new `state`.
-  print(cubit.state); // 1
-
-  /// Close the `cubit` when it is no longer needed.
-  cubit.close();
-}
-```
-
-#### Observing a Cubit
-
-`onChange` can be overridden to observe state changes for a single `cubit`.
-
-`onError` can be overridden to observe errors for a single `cubit`.
-
-```dart
-class CounterCubit extends Cubit<int> {
-  CounterCubit() : super(0);
-
-  void increment() => emit(state + 1);
-
-  @override
-  void onChange(Change<int> change) {
-    super.onChange(change);
-    print(change);
-  }
-
-  @override
-  void onError(Object error, StackTrace stackTrace) {
-    print('$error, $stackTrace');
-    super.onError(error, stackTrace);
-  }
-}
-```
-
-`BlocObserver` can be used to observe all `cubits`.
-
-```dart
-class MyBlocObserver extends BlocObserver {
-  @override
-  void onCreate(BlocBase bloc) {
-    super.onCreate(bloc);
-    print('onCreate -- ${bloc.runtimeType}');
-  }
-
-  @override
-  void onChange(BlocBase bloc, Change change) {
-    super.onChange(bloc, change);
-    print('onChange -- ${bloc.runtimeType}, $change');
-  }
-
-  @override
-  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    print('onError -- ${bloc.runtimeType}, $error');
-    super.onError(bloc, error, stackTrace);
-  }
-
-  @override
-  void onClose(BlocBase bloc) {
-    super.onClose(bloc);
-    print('onClose -- ${bloc.runtimeType}');
-  }
-}
-```
-
-```dart
-void main() {
-  Bloc.observer = MyBlocObserver();
-  // Use cubits...
-}
-```
-
 ### Bloc
 
 ![Bloc Architecture](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_architecture_full.png)
 
-A `Bloc` is a more advanced class which relies on `events` to trigger `state` changes rather than functions. `Bloc` also extends `BlocBase` which means it has a similar public API as `Cubit`. However, rather than calling a `function` on a `Bloc` and directly emitting a new `state`, `Blocs` receive `events` and convert the incoming `events` into outgoing `states`.
+A `Bloc` is a more advanced class which relies on `events` to trigger `state` changes rather than functions. `Bloc` also extends `IBloc`. However, rather than calling a `function` on a `Bloc` and directly emitting a new `state`, `Blocs` receive `events` and convert the incoming `events` into outgoing `states`.
 
 ![Bloc Flow](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_flow.png)
 
@@ -232,7 +124,7 @@ void main() async {
 
 #### Observing a Bloc
 
-Since all `Blocs` extend `BlocBase` just like `Cubit`, `onChange` and `onError` can be overridden in a `Bloc` as well.
+Since all `Blocs` extend `IBloc`, `onChange` and `onError` can be overridden in a `Bloc` as well.
 
 In addition, `Blocs` can also override `onEvent` and `onTransition`.
 
@@ -286,7 +178,7 @@ class CounterBloc extends Bloc<CounterEvent, int> {
 ```dart
 class MyBlocObserver extends BlocObserver {
   @override
-  void onCreate(BlocBase bloc) {
+  void onCreate(IBloc bloc) {
     super.onCreate(bloc);
     print('onCreate -- ${bloc.runtimeType}');
   }
@@ -298,7 +190,7 @@ class MyBlocObserver extends BlocObserver {
   }
 
   @override
-  void onChange(BlocBase bloc, Change change) {
+  void onChange(IBloc bloc, Change change) {
     super.onChange(bloc, change);
     print('onChange -- ${bloc.runtimeType}, $change');
   }
@@ -310,13 +202,13 @@ class MyBlocObserver extends BlocObserver {
   }
 
   @override
-  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+  void onError(IBloc bloc, Object error, StackTrace stackTrace) {
     print('onError -- ${bloc.runtimeType}, $error');
     super.onError(bloc, error, stackTrace);
   }
 
   @override
-  void onClose(BlocBase bloc) {
+  void onClose(IBloc bloc) {
     super.onClose(bloc);
     print('onClose -- ${bloc.runtimeType}');
   }
@@ -341,3 +233,4 @@ void main() {
 ## Maintainers
 
 - [Felix Angelov](https://github.com/felangel)
+-->

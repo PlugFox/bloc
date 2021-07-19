@@ -114,7 +114,7 @@ import 'package:test/test.dart' as test;
 /// );
 /// ```
 @isTest
-void blocTest<B extends BlocBase<State>, State>(
+void blocTest<B extends IBlocSubject<State>, State>(
   String description, {
   required B Function() build,
   State Function()? seed,
@@ -142,7 +142,7 @@ void blocTest<B extends BlocBase<State>, State>(
 /// Internal [blocTest] runner which is only visible for testing.
 /// This should never be used directly -- please use [blocTest] instead.
 @visibleForTesting
-Future<void> testBloc<B extends BlocBase<State>, State>({
+Future<void> testBloc<B extends IBlocSubject<State>, State>({
   required B Function() build,
   State Function()? seed,
   Function(B bloc)? act,
@@ -159,7 +159,7 @@ Future<void> testBloc<B extends BlocBase<State>, State>({
       final states = <State>[];
       final bloc = build();
       // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-      if (seed != null) bloc.emit(seed());
+      if (seed != null) bloc.setState(seed());
       final subscription = bloc.stream.skip(skip).listen(states.add);
       try {
         await act?.call(bloc);
@@ -170,7 +170,9 @@ Future<void> testBloc<B extends BlocBase<State>, State>({
       }
       if (wait != null) await Future<void>.delayed(wait);
       await Future<void>.delayed(Duration.zero);
-      await bloc.close();
+      if (bloc is StreamConsumer) {
+        await (bloc as StreamConsumer).close();
+      }
       if (expect != null) {
         final dynamic expected = expect();
         shallowEquality = '$states' == '$expected';
