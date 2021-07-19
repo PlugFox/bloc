@@ -430,7 +430,7 @@ abstract class _ObserverManager {
   ) =>
       runZoned<R>(
         body,
-        zoneValues: <Object?, Object?>{
+        zoneValues: <Type, IBlocObserver>{
           _ObserverManager: observer,
         },
       );
