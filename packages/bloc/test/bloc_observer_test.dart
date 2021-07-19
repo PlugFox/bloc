@@ -16,42 +16,42 @@ void main() {
     group('onCreate', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        BlocObserver().onCreate(bloc);
+        IBlocObserver().onCreate(bloc);
       });
     });
 
     group('onEvent', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        BlocObserver().onEvent(bloc, event);
+        IBlocObserver().onEvent(bloc, event);
       });
     });
 
     group('onChange', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        BlocObserver().onChange(bloc, change);
+        IBlocObserver().onChange(bloc, change);
       });
     });
 
     group('onTransition', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        BlocObserver().onTransition(bloc, transition);
+        IBlocObserver().onTransition(bloc, transition);
       });
     });
 
     group('onError', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        BlocObserver().onError(bloc, event, StackTrace.current);
+        IBlocObserver().onError(bloc, event, StackTrace.current);
       });
     });
 
     group('onClose', () {
       test('does nothing by default', () {
         // ignore: invalid_use_of_protected_member
-        BlocObserver().onClose(bloc);
+        IBlocObserver().onClose(bloc);
       });
     });
   });

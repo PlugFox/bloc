@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
@@ -43,20 +45,20 @@ abstract class IBlocSink<Event extends Object?> implements StreamSink<Event> {
   ///
   /// See also:
   ///
-  /// * [BlocObserver.onEvent] for observing events globally.
+  /// * [IBlocObserver.onEvent] for observing events globally.
   ///
   @protected
   @mustCallSuper
   @visibleForOverriding
   void onEvent(Event event);
 
-  /// Called whenever an [error] occurs and notifies [BlocObserver.onError].
+  /// Called whenever an [error] occurs and notifies [IBlocObserver.onError].
   ///
   /// In debug mode, [onError] throws a [BlocUnhandledErrorException] for
   /// improved visibility.
   ///
   /// In release mode, [onError] does not throw and will instead only report
-  /// the error to [BlocObserver.onError].
+  /// the error to [IBlocObserver.onError].
   ///
   /// **Note: `super.onError` should always be called last.**
   /// ```dart
@@ -133,7 +135,7 @@ abstract class IBlocSubject<State extends Object?>
   ///
   /// See also:
   ///
-  /// * [BlocObserver] for observing [Bloc] behavior globally.
+  /// * [IBlocObserver] for observing [Bloc] behavior globally.
   @protected
   @mustCallSuper
   @visibleForOverriding
@@ -218,7 +220,7 @@ abstract class IBloc<Event extends Object?, State extends Object?>
   ///
   /// See also:
   ///
-  /// * [BlocObserver.onTransition] for observing transitions globally.
+  /// * [IBlocObserver.onTransition] for observing transitions globally.
   ///
   @protected
   @mustCallSuper
@@ -258,33 +260,35 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   /// {@macro bloc}
   Bloc(State initialState) : _state = initialState {
     _bindEventsToStates();
-    // ignore: invalid_use_of_protected_member
-    Bloc.observer.onCreate(this);
+    _ObserverManager.observer?.onCreate(this);
   }
 
-  /// The current [BlocObserver] instance.
-  static BlocObserver observer = BlocObserver();
+  /// Runs [body] in its own zone.
+  /// Observing all BLoC's inside this zone with [observer] instance.
+  static R observe<R extends Object?>(
+    R Function() body, {
+    required IBlocObserver observer,
+  }) =>
+      _ObserverManager.observe<R>(body, observer);
 
   @override
   State get state => _state;
   State _state;
 
-  StreamController<Event>? __eventController;
-  StreamController<Event> get _eventController =>
-      __eventController ??= StreamController<Event>.broadcast();
+  final StreamController<Event> _eventController =
+      StreamController<Event>.broadcast();
 
   @override
   StateStream<State> get stream => StateStream(_stateController.stream);
-  StreamController<State>? __stateController;
+  StreamController<State>? _lazyStateController;
   StreamController<State> get _stateController =>
-      __stateController ??= StreamController<State>.broadcast();
+      _lazyStateController ??= StreamController<State>.broadcast();
 
   StreamSubscription<Transition<Event, State>>? _transitionSubscription;
 
   @override
   void onChange(Change<State> change) =>
-      // ignore: invalid_use_of_protected_member
-      Bloc.observer.onChange(this, change);
+      _ObserverManager.observer?.onChange(this, change);
 
   @override
   void addError(Object error, [StackTrace? stackTrace]) =>
@@ -302,18 +306,24 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   }
 
   @override
-  void onEvent(Event event) =>
-      // ignore: invalid_use_of_protected_member
-      observer.onEvent(this, event);
+  void onEvent(Event event) => _ObserverManager.observer?.onEvent(this, event);
 
   @override
-  void onError(Object error, StackTrace stackTrace) {
-    // ignore: invalid_use_of_protected_member
-    Bloc.observer.onError(this, error, stackTrace);
-    assert(() {
-      throw BlocUnhandledErrorException(this, error, stackTrace);
-    }());
+  void onError(Object error, [StackTrace? stackTrace]) {
+    _ObserverManager.observer?.onError(
+      this,
+      error,
+      stackTrace ?? StackTrace.current,
+    );
+    assert(_throwUnhandledException(
+      error,
+      stackTrace ?? StackTrace.current,
+    ));
   }
+
+  @alwaysThrows
+  Never _throwUnhandledException(Object error, StackTrace stackTrace) =>
+      throw BlocUnhandledErrorException(this, error, stackTrace);
 
   @override
   Stream<Transition<Event, State>> transformEvents(
@@ -332,8 +342,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
 
   @override
   void onTransition(Transition<Event, State> transition) =>
-      // ignore: invalid_use_of_protected_member
-      Bloc.observer.onTransition(this, transition);
+      _ObserverManager.observer?.onTransition(this, transition);
 
   @override
   Stream<Transition<Event, State>> transformTransitions(
@@ -345,8 +354,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   Future<void> close() async {
     await _eventController.close();
     await _transitionSubscription?.cancel();
-    // ignore: invalid_use_of_protected_member
-    Bloc.observer.onClose(this);
+    _ObserverManager.observer?.onClose(this);
     await _stateController.close();
   }
 
@@ -373,11 +381,44 @@ abstract class Bloc<Event extends Object?, State extends Object?>
           try {
             onTransition(transition);
             setState(transition.nextState);
-          } catch (error, stackTrace) {
+          } on Object catch (error, stackTrace) {
             onError(error, stackTrace);
           }
         },
         onError: onError,
         cancelOnError: false,
       );
+}
+
+/// Observe BLoC's with [IBlocObserver]
+@protected
+abstract class _ObserverManager {
+  const _ObserverManager._();
+
+  /// Observe all zone BLoC's with [observer]
+  @internal
+  static R observe<R extends Object?>(
+    R Function() body,
+    IBlocObserver observer,
+  ) =>
+      runZoned<R>(
+        body,
+        zoneValues: <Object?, Object?>{
+          _ObserverManager: observer,
+        },
+      );
+
+  /// Get current BlocObserver for nearest zone
+  @internal
+  static IBlocObserver? get observer {
+    Zone? zone = Zone.current;
+    while (zone != null) {
+      final Object? observer = zone[_ObserverManager];
+      if (observer is IBlocObserver) {
+        return observer;
+      }
+      zone = zone.parent;
+    }
+    return null;
+  }
 }

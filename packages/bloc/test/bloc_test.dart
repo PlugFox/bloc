@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 import 'blocs/blocs.dart';
 
-class MockBlocObserver extends Mock implements BlocObserver {}
+class MockBlocObserver extends Mock implements IBlocObserver {}
 
 class FakeSub<S> extends Fake implements IBlocSubject<S> {}
 

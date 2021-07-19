@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 /// An interface for observing the behavior of [Bloc] instances.
-class BlocObserver {
+abstract class IBlocObserver {
   /// Called whenever a [Bloc] is instantiated.
   /// In many cases, a BLoC may be lazily instantiated and
   /// [onCreate] can be used to observe exactly when the bloc

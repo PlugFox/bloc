@@ -3,14 +3,34 @@ import 'dart:async';
 /// {@template state_stream}
 /// Broadcast [State] stream view for BLoC pattern.
 /// {@endtemplate}
-class StateStream<State extends Object?> extends StreamView<State> {
+class StateStream<State extends Object?> extends Stream<State>
+    with _StateStreamMixin<State>
+    implements StreamView<State> {
   /// {@macro state_stream}
   ///
   /// Input stream must be broadcast.
   StateStream(Stream<State> stream)
       : assert(stream.isBroadcast, 'State stream must be broadcast'),
-        super(stream);
+        _stream = stream;
 
+  final Stream<State> _stream;
+
+  @override
+  StreamSubscription<State> listen(
+    void Function(State event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) =>
+      _stream.listen(
+        onData,
+        onError: onError,
+        onDone: onDone,
+        cancelOnError: cancelOnError ?? false,
+      );
+}
+
+mixin _StateStreamMixin<State> on Stream<State> {
   /// This stream is always broadcast
   @override
   bool get isBroadcast => true;

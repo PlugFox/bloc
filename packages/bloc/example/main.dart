@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 
-class SimpleBlocObserver extends BlocObserver {
+class SimpleBlocObserver extends IBlocObserver {
   @override
   void onCreate(IBloc bloc) {
     super.onCreate(bloc);
