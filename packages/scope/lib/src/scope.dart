@@ -1,5 +1,21 @@
+// ignore_for_file: comment_references
+
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+
+import 'exceptions.dart';
+
+/// Whether the framework should notify widgets that inherit from this widget.
+///
+/// A function that returns true when the update from [previous] to [current]
+/// should notify listeners, if any.
+///
+/// See also:
+///
+///   * [InheritedWidget.updateShouldNotify]
+typedef UpdateShouldNotify<T> = bool Function(T previous, T current);
 
 /// A function that creates an object of type [T].
 ///
@@ -8,6 +24,23 @@ import 'package:flutter/widgets.dart';
 ///  * [Dispose], to free the resources associated to the value created.
 typedef Create<T> = T Function(BuildContext context);
 
+/// Called when a dependency of this [T] object changes.
+///
+/// For example, if the previous call to build referenced an InheritedWidget
+///  or Scope that later changed, the framework would call this method
+///  to notify this object about the change.
+///
+/// Method must return old or new version of value.
+/// If old value have close/dispose method and you create new one
+///  - close old value in this method.
+///
+/// [shouldNotify] called if instance is changed.
+///
+/// See also:
+///
+///  * [State.didChangeDependencies], called when a dependency changes.
+typedef Update<T> = T Function(BuildContext context, T? value);
+
 /// A function that disposes an object of type [T].
 ///
 /// See also:
@@ -15,20 +48,50 @@ typedef Create<T> = T Function(BuildContext context);
 ///  * [Create], to create a value that will later be disposed of.
 typedef Dispose<T> = void Function(BuildContext context, T value);
 
-/// Scope, dependency injector/provider
+/// Scope, dependency injector/provider/scope
 ///
 /// A generic implementation of an [InheritedWidget].
 ///
 /// Any descendant of this widget can obtain `value` using [Scope.of].
-class Scope<T extends Object> extends StatefulWidget {
-  /// Expose to its descendants an existing value,
-  Scope.value({
-    required T value,
-    this.builder,
-    this.child,
+abstract class Scope<T extends Object> extends Widget {
+  /// Creates a value, then expose it to its descendants.
+  ///
+  /// The value will be disposed of when [Scope] is removed from
+  /// the widget tree.
+  factory Scope({
+    required Create<T> create,
+    Update<T>? update,
+    Dispose<T>? dispose,
+    TransitionBuilder? builder,
+    Widget? child,
+    UpdateShouldNotify<T>? shouldNotify,
     Key? key,
-  })  : _scopeDelegate = _ValueScopeDelegate<T>(value),
-        super(key: key);
+  }) =>
+      _CreateScope(
+        create,
+        update,
+        dispose,
+        builder,
+        child,
+        shouldNotify,
+        key,
+      );
+
+  /// Expose to its descendants an existing value,
+  factory Scope.value({
+    required T value,
+    TransitionBuilder? builder,
+    Widget? child,
+    UpdateShouldNotify<T>? updateShouldNotify,
+    Key? key,
+  }) =>
+      _ValueScope(
+        value,
+        builder,
+        child,
+        updateShouldNotify,
+        key,
+      );
 
   /// Obtains the nearest [Scope]<T> up its widget tree and returns its
   /// value.
@@ -38,45 +101,178 @@ class Scope<T extends Object> extends StatefulWidget {
   /// And then calls the callback [fallback]
   ///
   /// And then calls the callback [GlobalScope.noSuchDependency](T)
-  static T of<T extends Object?>({
+  static T of<T extends Object>(
+    BuildContext context, {
     bool listen = false,
     T Function()? fallback,
-  }) =>
-      throw UnimplementedError();
+  }) {
+    T? value;
+    value = _InheritedScope.of<T>(context, listen) ?? fallback?.call();
+    if (value == null) {
+      throw ScopeNotFoundException(T);
+    }
+    return value;
+  }
 
-  /// Syntax sugar for obtaining a [BuildContext] that can read the scope
-  /// created.
-  final TransitionBuilder? builder;
+  /// A builder that builds a widget given a child.
+  ///
+  /// The child should typically be part of the returned widget tree.
+  ///
+  /// See also:
+  ///
+  ///  * [WidgetBuilder], which is similar but only takes a [BuildContext].
+  ///  * [IndexedWidgetBuilder], which is similar but also takes an index.
+  ///  * [ValueWidgetBuilder], which is similar but takes a value and a child.
+  TransitionBuilder? get builder;
 
   /// Child widget.
-  final Widget? child;
+  Widget? get child;
 
-  final _IScopeDelegate<T> _scopeDelegate;
-
-  @override
-  State<Scope> createState() => _scopeDelegate.createState();
+  /// Whether the framework should notify widgets that inherit from this widget.
+  ///
+  /// See also:
+  ///
+  ///   * [InheritedWidget.updateShouldNotify]
+  UpdateShouldNotify<T>? get shouldNotify;
 }
 
-abstract class _IScopeDelegate<T extends Object> {
-  State<Scope> createState();
-}
-
-class _ValueScopeDelegate<T extends Object> implements _IScopeDelegate<T> {
-  _ValueScopeDelegate(this.value);
+class _ValueScope<T extends Object> extends StatelessWidget
+    implements Scope<T> {
+  _ValueScope(
+    this.value,
+    this.builder,
+    this.child,
+    this.shouldNotify,
+    Key? key,
+  ) : super(key: key);
 
   final T value;
 
   @override
-  State<Scope<T>> createState() {
-    // TODO: implement call
-    throw UnimplementedError();
+  final TransitionBuilder? builder;
+
+  @override
+  final Widget? child;
+
+  @override
+  final UpdateShouldNotify<T>? shouldNotify;
+
+  @override
+  Widget build(BuildContext context) => _InheritedScope<T>(
+        value: value,
+        child: builder?.call(context, child) ?? child ?? const Offstage(),
+        shouldNotify: shouldNotify,
+      );
+}
+
+class _CreateScope<T extends Object> extends StatefulWidget
+    implements Scope<T> {
+  _CreateScope(
+    this.create,
+    this.update,
+    this.dispose,
+    this.builder,
+    this.child,
+    this.shouldNotify,
+    Key? key,
+  ) : super(key: key);
+
+  final Create<T> create;
+
+  final Update<T>? update;
+
+  final Dispose<T>? dispose;
+
+  @override
+  final TransitionBuilder? builder;
+
+  @override
+  final Widget? child;
+
+  @override
+  final UpdateShouldNotify<T>? shouldNotify;
+
+  @override
+  State<_CreateScope<T>> createState() => _CreateScopeState<T>();
+}
+
+class _CreateScopeState<T extends Object> extends State<_CreateScope<T>> {
+  T? value;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final oldValue = value;
+    final update = widget.update;
+    if (value != null && update != null) {
+      value = update(context, oldValue);
+    } else {
+      value = widget.create(context);
+    }
+  }
+
+  @override
+  void dispose() {
+    final dispose = widget.dispose;
+    if (dispose != null) {
+      dispose(context, value!);
+    } else if (value is Sink || value is StreamConsumer) {
+      (value as dynamic).close();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => _InheritedScope<T>(
+        value: value!,
+        child: widget.builder?.call(context, widget.child) ??
+            widget.child ??
+            const Offstage(),
+        shouldNotify: widget.shouldNotify,
+      );
+}
+
+@immutable
+class _InheritedScope<T extends Object> extends InheritedWidget {
+  const _InheritedScope({
+    required this.value,
+    required Widget child,
+    required this.shouldNotify,
+    Key? key,
+  }) : super(key: key, child: child);
+
+  final T value;
+
+  static T? of<T extends Object>(BuildContext ctx, bool listen) =>
+      listen ? watch<T>(ctx) : read<T>(ctx);
+
+  static T? watch<T extends Object>(BuildContext ctx) =>
+      ctx.dependOnInheritedWidgetOfExactType<_InheritedScope<T>>()?.value;
+
+  static T? read<T extends Object>(BuildContext ctx) {
+    final e = ctx.getElementForInheritedWidgetOfExactType<_InheritedScope<T>>();
+    final w = e?.widget;
+    return w is _InheritedScope<T> ? w.value : null;
+  }
+
+  final UpdateShouldNotify<T>? shouldNotify;
+
+  @override
+  bool updateShouldNotify(covariant _InheritedScope<T> oldWidget) {
+    final prev = oldWidget.value;
+    final next = value;
+    if (identical(prev, value)) {
+      return false;
+    }
+    return shouldNotify?.call(prev, next) ?? prev != next;
   }
 }
 
-class _ValueScopeState<T extends Object> extends State<Scope> {
-  @override
-  Widget build(BuildContext context) =>
-      widget.builder?.call(context, widget.child) ??
-      widget.child ??
-      const Offstage();
+/// TODO: doc
+extension BuildContextScopeX on BuildContext {
+  /// TODO: doc
+  T read<T extends Object?>() => Scope.of(this, listen: false);
+
+  /// TODO: doc
+  T watch<T extends Object?>() => Scope.of(this, listen: true);
 }
