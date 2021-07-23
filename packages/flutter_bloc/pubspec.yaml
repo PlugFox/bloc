@@ -1,8 +1,8 @@
-name: flutter_bloc
+name: scope
 description: >
   Flutter Widgets that make it easy to implement the BLoC (Business Logic Component) design pattern.
   Built to be used with the bloc state management package.
-version: 8.0.0-develop
+version: 0.0.0-develop
 repository: https://github.com/PlugFox/bloc/tree/master/packages/flutter_bloc
 issue_tracker: https://github.com/PlugFox/bloc/issues
 homepage: https://github.com/PlugFox/bloc
@@ -11,17 +11,24 @@ homepage: https://github.com/PlugFox/bloc
 publish_to: none
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ^2.13.0
+  flutter: ^2.2.0
 
 dependencies:
   flutter:
     sdk: flutter
+
   bloc:
     git:
       url: 'https://github.com/PlugFox/bloc.git'
       ref: 'develop'
       path: 'packages/bloc'
-  provider: ^5.0.0
+
+  scope:
+    git:
+      url: 'https://github.com/PlugFox/bloc.git'
+      ref: 'develop'
+      path: 'packages/scope'
 
 dev_dependencies:
   flutter_test:
