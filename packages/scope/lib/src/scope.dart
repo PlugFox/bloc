@@ -46,7 +46,7 @@ typedef Update<T> = T Function(BuildContext context, T? value);
 /// See also:
 ///
 ///  * [Create], to create a value that will later be disposed of.
-typedef Dispose<T> = void Function(BuildContext context, T value);
+typedef Dispose<T> = void Function(T value);
 
 /// Scope, dependency injector/provider/scope
 ///
@@ -82,14 +82,14 @@ abstract class Scope<T extends Object> extends Widget {
     required T value,
     TransitionBuilder? builder,
     Widget? child,
-    UpdateShouldNotify<T>? updateShouldNotify,
+    UpdateShouldNotify<T>? shouldNotify,
     Key? key,
   }) =>
       _ValueScope(
         value,
         builder,
         child,
-        updateShouldNotify,
+        shouldNotify,
         key,
       );
 
@@ -98,19 +98,35 @@ abstract class Scope<T extends Object> extends Widget {
   ///
   /// If not found searches in [GlobalScope].of<T>.
   ///
-  /// And then calls the callback [fallback]
+  /// And then calls the callback [GlobalScope].fallback(T)
   ///
-  /// And then calls the callback [GlobalScope.noSuchDependency](T)
+  /// Throw [ScopeNotFoundException] if [T] not exist.
   static T of<T extends Object>(
     BuildContext context, {
     bool listen = false,
-    T Function()? fallback,
   }) {
     T? value;
-    value = _InheritedScope.of<T>(context, listen) ?? fallback?.call();
+    value = maybeOf<T>(context, listen: listen);
     if (value == null) {
       throw ScopeNotFoundException(T);
     }
+    return value;
+  }
+
+  /// Obtains the nearest [Scope]<T> up its widget tree and returns its
+  /// value.
+  ///
+  /// If not found searches in [GlobalScope].of<T>.
+  ///
+  /// And then calls the callback [GlobalScope].fallback(T)
+  ///
+  /// Return null if [T] not exist.
+  static T? maybeOf<T extends Object>(
+    BuildContext context, {
+    bool listen = false,
+  }) {
+    T? value;
+    value = _InheritedScope.of<T>(context, listen);
     return value;
   }
 
@@ -215,7 +231,7 @@ class _CreateScopeState<T extends Object> extends State<_CreateScope<T>> {
   void dispose() {
     final dispose = widget.dispose;
     if (dispose != null) {
-      dispose(context, value!);
+      dispose(value!);
     } else if (value is Sink || value is StreamConsumer) {
       (value as dynamic).close();
     }
