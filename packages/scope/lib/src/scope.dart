@@ -276,6 +276,3 @@ extension BuildContextScopeX on BuildContext {
   /// TODO: doc
   T watch<T extends Object?>() => Scope.of(this, listen: true);
 }
-
-final a = StatefulElement(widget);
-final b = StatelessElement(widget);
