@@ -3,6 +3,8 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 
+import 'global_scope.dart';
+
 /// Global scope
 @experimental
 class ZonedScope {
@@ -35,7 +37,7 @@ class ZonedScope {
       }
       zone = zone.parent;
     }
-    return null;
+    return GlobalScope.read<T>();
   }
 }
 

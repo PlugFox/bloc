@@ -22,7 +22,7 @@ abstract class Scope implements Widget, IScope {
   /// The value will be disposed of when [IScope] is removed from
   /// the widget tree.
   @factory
-  static Widget create<T extends Object>({
+  static IScope<T> create<T extends Object>({
     required Create<T> create,
     Update<T>? update,
     Dispose<T>? dispose,
@@ -31,7 +31,7 @@ abstract class Scope implements Widget, IScope {
     UpdateShouldNotify<T>? shouldNotify,
     Key? key,
   }) =>
-      CreateScope(
+      CreateScope<T>(
         create,
         update,
         dispose,
@@ -43,14 +43,14 @@ abstract class Scope implements Widget, IScope {
 
   /// Expose to its descendants an existing value,
   @factory
-  static Widget value<T extends Object>({
+  static IScope<T> value<T extends Object>({
     required T value,
     TransitionBuilder? builder,
     Widget? child,
     UpdateShouldNotify<T>? shouldNotify,
     Key? key,
   }) =>
-      ValueScope(
+      ValueScope<T>(
         value,
         builder,
         child,

@@ -12,7 +12,11 @@ class GlobalScope {
 
   final _GlobalScopeDelegate _delegate;
 
-  ///TODO: doc
+  /// Provide value with [GlobalScope]
+  static void inject(Object value) =>
+      _instance._delegate[value.runtimeType] = value;
+
+  /// Read data from [GlobalScope]
   static T? read<T extends Object>() => _instance._delegate[T] as T?;
 }
 

@@ -12,7 +12,7 @@ import 'interface_scope.dart';
 @immutable
 class CreateScope<T extends Object> extends StatefulWidget
     implements IScope<T> {
-  CreateScope(
+  const CreateScope(
     this.create,
     this.update,
     this.dispose,

@@ -10,7 +10,7 @@ import 'interface_scope.dart';
 @immutable
 class ValueScope<T extends Object> extends StatelessWidget
     implements IScope<T> {
-  ValueScope(
+  const ValueScope(
     this.value,
     this.builder,
     this.child,

@@ -1,4 +1,4 @@
-name: flutter_bloc
+name: scope
 description: >
   A wrapper around InheritedWidget to make them easier to use and more reusable.
 version: 0.0.0-develop

@@ -5,8 +5,8 @@ import 'scope.dart' show Scope;
 /// TODO: doc
 extension BuildContextScopeX on BuildContext {
   /// TODO: doc
-  T read<T extends Object?>() => Scope.of(this, listen: false);
+  T read<T extends Object>() => Scope.of<T>(this, listen: false);
 
   /// TODO: doc
-  T watch<T extends Object?>() => Scope.of(this, listen: true);
+  T watch<T extends Object>() => Scope.of<T>(this, listen: true);
 }
