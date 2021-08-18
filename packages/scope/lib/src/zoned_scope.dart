@@ -23,6 +23,8 @@ class ZonedScope {
       );
 
   /// Read data from [ZonedScope]
+  ///
+  /// If not found searches in [GlobalScope].read<T>().
   static T? read<T extends Object>() {
     Zone? zone = Zone.current;
     while (zone != null) {
