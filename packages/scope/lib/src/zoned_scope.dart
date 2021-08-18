@@ -13,6 +13,18 @@ class ZonedScope {
   /// Provide value with zone
   static R inject<R extends Object?>(
     R Function() body,
+    Object value,
+  ) =>
+      runZoned<R>(
+        body,
+        zoneValues: <Type, _GlobalScopeKey>{
+          _GlobalScopeKey: _GlobalScopeKey.fromValue(value),
+        },
+      );
+
+  /// Provide values with zone
+  static R injectAll<R extends Object?>(
+    R Function() body,
     Iterable<Object> values,
   ) =>
       runZoned<R>(
@@ -51,6 +63,9 @@ class _GlobalScopeKey extends UnmodifiableMapBase<Type, Object> {
           key: (Object? element) => element!.runtimeType,
           value: (Object? element) => element!,
         );
+
+  factory _GlobalScopeKey.fromValue(Object value) =>
+      _GlobalScopeKey.fromValues(<Object>[value]);
 
   final Map<Type, Object> _internalMap;
 

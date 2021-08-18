@@ -13,8 +13,14 @@ class GlobalScope {
   final _GlobalScopeDelegate _delegate;
 
   /// Provide value with [GlobalScope]
-  static void inject<T extends Object>(T value) =>
+  static void inject(Object value) =>
       _instance._delegate[value.runtimeType] = value;
+
+  /// Provide value with [GlobalScope]
+  static void injectAll(Iterable<Object> values) =>
+      _instance._delegate.addAll(<Type, Object>{
+        for (final value in values) value.runtimeType: value,
+      });
 
   /// Read data from [GlobalScope]
   static T? read<T extends Object>() => _instance._delegate[T] as T?;
