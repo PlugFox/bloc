@@ -4,7 +4,7 @@ import 'package:scope/scope.dart';
 void main() {
   GlobalScope.inject('Hello world');
   GlobalScope.inject(1);
-  runApp(App());
+  runApp(const App());
 }
 
 @immutable
@@ -19,7 +19,7 @@ class App extends StatelessWidget {
           Scope.value<String>(value: 'Hello world'),
           Scope.value<int>(value: 3),
         ],
-        child: MaterialApp(
+        child: const MaterialApp(
           home: Scaffold(
             body: SafeArea(
               child: Center(
@@ -49,9 +49,9 @@ class ResultColumn extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text('GlobalScope: '),
+                      const Text('GlobalScope: '),
                       Text(GlobalScope.read<String>()!),
-                      Text(' #'),
+                      const Text(' #'),
                       Text(GlobalScope.read<int>().toString()),
                     ],
                   ),
@@ -60,9 +60,9 @@ class ResultColumn extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text('ZonedScope: '),
+                      const Text('ZonedScope: '),
                       Text(ZonedScope.read<String>()!),
-                      Text(' #'),
+                      const Text(' #'),
                       Text(ZonedScope.read<int>().toString()),
                     ],
                   ),
@@ -71,9 +71,9 @@ class ResultColumn extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text('Scope: '),
+                      const Text('Scope: '),
                       Text(Scope.maybeOf<String>(context) ?? '?'),
-                      Text(' #'),
+                      const Text(' #'),
                       Text(Scope.maybeOf<int>(context)?.toString() ?? '?'),
                     ],
                   ),

@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 
 import 'global_scope.dart';
 
-/// Global scope
+/// Zoned scope
 @experimental
 class ZonedScope {
   ZonedScope._();
