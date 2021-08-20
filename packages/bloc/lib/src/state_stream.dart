@@ -17,7 +17,7 @@ class StateStream<State extends Object?> extends Stream<State>
 
   @override
   StreamSubscription<State> listen(
-    void Function(State event)? onData, {
+    void Function(State state)? onData, {
     Function? onError,
     void Function()? onDone,
     bool? cancelOnError,
@@ -30,7 +30,7 @@ class StateStream<State extends Object?> extends Stream<State>
       );
 }
 
-mixin _StateStreamMixin<State> on Stream<State> {
+mixin _StateStreamMixin<State extends Object?> on Stream<State> {
   /// This stream is always broadcast
   @override
   bool get isBroadcast => true;
@@ -39,7 +39,7 @@ mixin _StateStreamMixin<State> on Stream<State> {
   ///
   /// [State]'s that do not match [T] are filtered out,
   ///  the resulting Stream will be of Type [T].
-  Stream<T> whereState<T extends State>() =>
+  Stream<T> whereState<T extends Object?>() =>
       where((state) => state is T).cast<T>();
 
   /// Filter with whereState<T>() and after that
@@ -47,13 +47,13 @@ mixin _StateStreamMixin<State> on Stream<State> {
   ///
   /// [State]'s that do not match [T] are filtered out,
   ///  the resulting Stream will be of Type [T].
-  Stream<T> whereUnique<T extends State>() => whereState<T>().distinct();
+  Stream<T> whereUnique<T extends Object?>() => whereState<T>().distinct();
 
   /// This transformer leaves only the necessary states with downcast to [T]
   ///
   /// [State]'s that do not match [T] are filtered out,
   ///  the resulting Stream will be of Type [T].
-  Stream<T> whereStates<T extends State>(bool Function(State state) filter) =>
+  Stream<T> whereStates<T extends Object?>(bool Function(State state) filter) =>
       where(filter).where((state) => state is T).cast<T>();
 
   /// Filter with whereStates<T>() and after that
@@ -62,7 +62,8 @@ mixin _StateStreamMixin<State> on Stream<State> {
   ///
   /// [State]'s that do not match [T] are filtered out,
   ///  the resulting Stream will be of Type [T].
-  Stream<T> whereUniques<T extends State>(bool Function(State state) filter) =>
+  Stream<T> whereUniques<T extends Object?>(
+          bool Function(State state) filter) =>
       whereStates<T>(filter).distinct();
 
   /// Upcast this object to Stream<State>

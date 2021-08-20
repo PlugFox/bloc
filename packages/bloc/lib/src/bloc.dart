@@ -306,7 +306,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
       StreamController<Event>.broadcast();
 
   @override
-  StateStream<State> get stream => StateStream(_stateController.stream);
+  StateStream<State> get stream => StateStream<State>(_stateController.stream);
   StreamController<State>? _lazyStateController;
   StreamController<State> get _stateController =>
       _lazyStateController ??= StreamController<State>.broadcast();
