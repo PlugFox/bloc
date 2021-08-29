@@ -40,9 +40,7 @@ class BlocScope<T extends IStateObservable<Object?>> extends StatelessWidget {
     Key? key,
   })  : _create = create,
         _value = null,
-        super(
-          key: key,
-        );
+        super(key: key);
 
   /// Takes a [value] and a [child] which will have access to the [value] via
   /// `BlocScope.of(context)`.
@@ -114,7 +112,10 @@ class BlocScope<T extends IStateObservable<Object?>> extends StatelessWidget {
     final value = _value;
     final create = _create;
     if (value != null) {
-      return Scope.value<T>(value: value);
+      return Scope.value<T>(
+        value: value,
+        child: child,
+      );
     } else if (create != null) {
       return Scope.create<T>(
         create: create,
@@ -123,6 +124,7 @@ class BlocScope<T extends IStateObservable<Object?>> extends StatelessWidget {
             (bloc as dynamic).close();
           }
         },
+        child: child,
       );
     } else {
       return ErrorWidget(

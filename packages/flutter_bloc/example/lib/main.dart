@@ -26,7 +26,7 @@ class SimpleBlocObserver extends IBlocObserver {
 }
 
 void main() => Bloc.observe(
-      () => runApp(App()),
+      () => runApp(const App()),
       observer: SimpleBlocObserver(),
     );
 
@@ -42,7 +42,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
         home: BlocScope.create(
           create: (_) => CounterBloc(),
-          child: CounterPage(),
+          child: const CounterPage(),
         ),
       );
 }
@@ -54,49 +54,48 @@ class CounterPage extends StatelessWidget {
   const CounterPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Counter')),
-      body: BlocBuilder<CounterBloc, int>(
-        builder: (_, count) {
-          return Center(
-            child: Text('$count', style: Theme.of(context).textTheme.headline1),
-          );
-        },
-      ),
-      floatingActionButton: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () =>
-                  context.read<CounterBloc>().add(CounterEvent.increment),
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(title: const Text('Counter')),
+        body: BlocBuilder<CounterBloc, int>(
+          builder: (_, count) {
+            return Center(
+              child:
+                  Text('$count', style: Theme.of(context).textTheme.headline1),
+            );
+          },
+        ),
+        floatingActionButton: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () =>
+                    context.read<CounterBloc>().add(CounterEvent.increment),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.remove),
-              onPressed: () =>
-                  context.read<CounterBloc>().add(CounterEvent.decrement),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: FloatingActionButton(
+                child: const Icon(Icons.remove),
+                onPressed: () =>
+                    context.read<CounterBloc>().add(CounterEvent.decrement),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              backgroundColor: Colors.red,
-              child: const Icon(Icons.error),
-              onPressed: () =>
-                  context.read<CounterBloc>().add(CounterEvent.error),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: FloatingActionButton(
+                backgroundColor: Colors.red,
+                child: const Icon(Icons.error),
+                onPressed: () =>
+                    context.read<CounterBloc>().add(CounterEvent.error),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 }
 
 /// Event being processed by [CounterBloc].
@@ -128,7 +127,7 @@ class CounterBloc extends Bloc<CounterEvent, int> {
         yield state + 1;
         break;
       case CounterEvent.error:
-        addError(Exception('unsupported event'));
+        addError(UnsupportedError('Unsupported event'));
     }
   }
 }

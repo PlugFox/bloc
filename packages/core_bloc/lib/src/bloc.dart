@@ -287,8 +287,10 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   /// {@macro bloc}
   Bloc(State initialState) : _state = initialState {
     _bindEventsToStates();
-    _ObserverManager.observer?.onCreate(this);
+    _observer = _ObserverManager.observer?..onCreate(this);
   }
+
+  IBlocObserver? _observer;
 
   /// Runs [body] in its own zone.
   /// Observing all BLoC's inside this zone with [observer] instance.
@@ -296,7 +298,10 @@ abstract class Bloc<Event extends Object?, State extends Object?>
     R Function() body, {
     required IBlocObserver observer,
   }) =>
-      _ObserverManager.observe<R>(body, observer);
+      _ObserverManager.observe<R>(
+        body,
+        observer,
+      );
 
   @override
   State get state => _state;
@@ -314,8 +319,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   StreamSubscription<Transition<Event, State>>? _transitionSubscription;
 
   @override
-  void onChange(Change<State> change) =>
-      _ObserverManager.observer?.onChange(this, change);
+  void onChange(Change<State> change) => _observer?.onChange(this, change);
 
   @override
   void addError(Object error, [StackTrace? stackTrace]) =>
@@ -333,11 +337,11 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   }
 
   @override
-  void onEvent(Event event) => _ObserverManager.observer?.onEvent(this, event);
+  void onEvent(Event event) => _observer?.onEvent(this, event);
 
   @override
   void onError(Object error, StackTrace stackTrace) {
-    _ObserverManager.observer?.onError(
+    _observer?.onError(
       this,
       error,
       stackTrace,
@@ -369,7 +373,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
 
   @override
   void onTransition(Transition<Event, State> transition) =>
-      _ObserverManager.observer?.onTransition(this, transition);
+      _observer?.onTransition(this, transition);
 
   @override
   Stream<Transition<Event, State>> transformTransitions(
@@ -381,7 +385,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   Future<void> close() async {
     await _eventController.close();
     await _transitionSubscription?.cancel();
-    _ObserverManager.observer?.onClose(this);
+    _observer?.onClose(this);
     await _stateController.close();
   }
 
