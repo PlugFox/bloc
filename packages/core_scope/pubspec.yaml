@@ -1,7 +1,7 @@
 name: fox_core_scope
 description: >
   A wrapper around InheritedWidget to make them easier to use and more reusable.
-version: 0.1.0-develop
+version: 0.1.0
 repository: https://github.com/PlugFox/bloc/tree/master/packages/core_scope
 issue_tracker: https://github.com/PlugFox/bloc/issues
 homepage: https://github.com/PlugFox/bloc

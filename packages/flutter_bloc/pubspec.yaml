@@ -2,7 +2,7 @@ name: fox_flutter_bloc
 description: >
   Flutter Widgets that make it easy to implement the BLoC (Business Logic Component) design pattern.
   Built to be used with the bloc state management package.
-version: 0.1.0-develop
+version: 0.1.0
 repository: https://github.com/PlugFox/bloc/tree/master/packages/flutter_bloc
 issue_tracker: https://github.com/PlugFox/bloc/issues
 homepage: https://github.com/PlugFox/bloc
@@ -16,9 +16,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  fox_core_bloc: ^0.1.0-develop
+  fox_core_bloc: ^0.1.0
 
-  fox_flutter_scope: ^0.1.0-develop
+  fox_flutter_scope: ^0.1.0
 
 dev_dependencies:
   flutter_test:
