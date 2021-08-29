@@ -1,6 +1,6 @@
+import 'package:core_scope/scope.dart';
 import 'package:flutter/widgets.dart' show BuildContext;
 
-import 'exceptions.dart';
 import 'scope.dart' show Scope;
 
 /// Exposes BuildContext method to [read].

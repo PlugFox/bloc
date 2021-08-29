@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scope/scope.dart';
+import 'package:flutter_scope/scope.dart';
 
 void main() {
   GlobalScope.inject('Hello world');
