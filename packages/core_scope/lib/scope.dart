@@ -1,4 +1,4 @@
-library core_scope;
+library fox_core_scope;
 
 export './src/exceptions.dart';
 export './src/global_scope.dart';

@@ -1,10 +1,11 @@
-name: example
-description: A new Flutter project.
-version: 1.0.0+1
+name: fox_flutter_bloc_example
+description: Flutter BLoC example
+version: 0.1.0-develop
+
 publish_to: none
 
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -13,13 +14,11 @@ dependencies:
     path: ../
 
 dependency_overrides:
-  bloc:
-    path: ../../bloc
   flutter_bloc:
     path: ../
 
 dev_dependencies:
-  effective_dart: ^1.2.0
+  flutter_lints: ^1.0.4
 
 flutter:
   uses-material-design: true

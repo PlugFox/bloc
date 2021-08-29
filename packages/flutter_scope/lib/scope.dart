@@ -1,6 +1,6 @@
-library flutter_scope;
+library fox_flutter_scope;
 
-export 'package:core_scope/scope.dart';
+export 'package:fox_core_scope/scope.dart';
 
 export './src/extensions.dart';
 export './src/multi_scope.dart';
