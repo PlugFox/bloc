@@ -7,8 +7,6 @@ issue_tracker: https://github.com/PlugFox/bloc/issues
 homepage: https://github.com/PlugFox/bloc
 #documentation: https://bloclibrary.dev
 
-publish_to: none
-
 environment:
   sdk: ^2.13.0
 

@@ -8,8 +8,6 @@ issue_tracker: https://github.com/PlugFox/bloc/issues
 homepage: https://github.com/PlugFox/bloc
 #documentation: https://bloclibrary.dev/#/gettingstarted
 
-publish_to: none
-
 environment:
   sdk: ^2.13.0
   flutter: ^2.2.0
@@ -18,17 +16,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  fox_core_bloc:
-    git:
-      url: 'https://github.com/PlugFox/bloc.git'
-      ref: 'develop'
-      path: 'packages/core_bloc'
+  fox_core_bloc: ^0.1.0-develop
 
-  fox_flutter_scope:
-    git:
-      url: 'https://github.com/PlugFox/bloc.git'
-      ref: 'develop'
-      path: 'packages/flutter_scope'
+  fox_flutter_scope: ^0.1.0-develop
 
 dev_dependencies:
   flutter_test:

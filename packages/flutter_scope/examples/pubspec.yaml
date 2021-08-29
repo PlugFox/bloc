@@ -1,8 +1,6 @@
 name: fox_flutter_scope_examples
 description: fox_flutter_scope_examples
 
-publish_to: 'none'
-
 version: 0.1.0+1-develop
 
 environment:
@@ -11,8 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fox_flutter_scope:
-    path: '../'
+  fox_flutter_scope: ^0.1.0-develop
 
 dev_dependencies:
   flutter_test:
