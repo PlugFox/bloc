@@ -1,7 +1,4 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/bloc.dart';
-import 'package:provider/provider.dart';
 
 /// Signature for the `builder` function which takes the `BuildContext` and
 /// [state] and is responsible for returning a widget which is to be rendered.
@@ -23,7 +20,7 @@ typedef BlocBuilderCondition<S> = bool Function(S previous, S current);
 /// `state` changes such as navigation, showing a dialog, etc...
 ///
 /// If the [bloc] parameter is omitted, [BlocBuilder] will automatically
-/// perform a lookup using [BlocProvider] and the current `BuildContext`.
+/// perform a lookup using [BlocScope] and the current `BuildContext`.
 ///
 /// ```dart
 /// BlocBuilder<BlocA, BlocAState>(
@@ -34,7 +31,7 @@ typedef BlocBuilderCondition<S> = bool Function(S previous, S current);
 /// ```
 ///
 /// Only specify the [bloc] if you wish to provide a [bloc] that is otherwise
-/// not accessible via [BlocProvider] and the current `BuildContext`.
+/// not accessible via [BlocScope] and the current `BuildContext`.
 ///
 /// ```dart
 /// BlocBuilder<BlocA, BlocAState>(
@@ -108,7 +105,7 @@ abstract class BlocBuilderBase<B extends IStateObservable<S>, S>
 
   /// The [bloc] that the [BlocBuilderBase] will interact with.
   /// If omitted, [BlocBuilderBase] will automatically perform a lookup using
-  /// [BlocProvider] and the current `BuildContext`.
+  /// [BlocScope] and the current `BuildContext`.
   final B? bloc;
 
   /// {@macro bloc_builder_build_when}

@@ -1,6 +1,6 @@
-import 'package:core_scope/scope.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fox_core_scope/scope.dart';
 
 import 'create_scope.dart';
 import 'inherited_scope.dart';

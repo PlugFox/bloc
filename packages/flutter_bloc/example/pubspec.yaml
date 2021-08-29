@@ -10,11 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_bloc:
+  fox_flutter_bloc:
     path: ../
 
 dependency_overrides:
-  flutter_bloc:
+  fox_flutter_bloc:
     path: ../
 
 dev_dependencies:

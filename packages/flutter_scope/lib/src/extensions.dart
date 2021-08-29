@@ -1,5 +1,5 @@
-import 'package:core_scope/scope.dart';
 import 'package:flutter/widgets.dart' show BuildContext;
+import 'package:fox_core_scope/scope.dart';
 
 import 'scope.dart' show Scope;
 

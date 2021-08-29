@@ -18,13 +18,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-  bloc:
+  fox_core_bloc:
     git:
       url: 'https://github.com/PlugFox/bloc.git'
       ref: 'develop'
       path: 'packages/core_bloc'
 
-  flutter_scope:
+  fox_flutter_scope:
     git:
       url: 'https://github.com/PlugFox/bloc.git'
       ref: 'develop'

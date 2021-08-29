@@ -1,23 +1,16 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
 
-/// Mixin which allows `MultiBlocProvider` to infer the types
-/// of multiple [BlocProvider]s.
-mixin BlocProviderSingleChildWidget on SingleChildWidget {}
-
-/// {@template bloc_provider}
+/// {@template bloc_scope}
 /// Takes a [Create] function that is responsible for
 /// creating the [Bloc] and a [child] which will have access
-/// to the instance via `BlocProvider.of(context)`.
+/// to the instance via `BlocScope.of(context)`.
 /// It is used as a dependency injection (DI) widget so that a single instance
 /// of a [Bloc] can be provided to multiple widgets within a subtree.
 ///
 /// ```dart
-/// BlocProvider(
+/// BlocScope(
 ///   create: (BuildContext context) => BlocA(),
 ///   child: ChildA(),
 /// );
@@ -28,7 +21,7 @@ mixin BlocProviderSingleChildWidget on SingleChildWidget {}
 /// To override this behavior, set [lazy] to `false`.
 ///
 /// ```dart
-/// BlocProvider(
+/// BlocScope(
 ///   lazy: false,
 ///   create: (BuildContext context) => BlocA(),
 ///   child: ChildA(),
@@ -36,10 +29,9 @@ mixin BlocProviderSingleChildWidget on SingleChildWidget {}
 /// ```
 ///
 /// {@endtemplate}
-class BlocProvider<T extends IStateObservable<Object?>>
-    extends SingleChildStatelessWidget with BlocProviderSingleChildWidget {
-  /// {@macro bloc_provider}
-  BlocProvider({
+class BlocScope<T extends IStateObservable<Object?>> {
+  /// {@macro bloc_scope}
+  BlocScope({
     Key? key,
     required Create<T> create,
     this.child,
@@ -49,23 +41,23 @@ class BlocProvider<T extends IStateObservable<Object?>>
         super(key: key, child: child);
 
   /// Takes a [value] and a [child] which will have access to the [value] via
-  /// `BlocProvider.of(context)`.
-  /// When `BlocProvider.value` is used, the [Bloc]
+  /// `BlocScope.of(context)`.
+  /// When `BlocScope.value` is used, the [Bloc]
   /// will not be automatically closed.
-  /// As a result, `BlocProvider.value` should only be used for providing
+  /// As a result, `BlocScope.value` should only be used for providing
   /// existing instances to new subtrees.
   ///
-  /// A new [Bloc] should not be created in `BlocProvider.value`.
+  /// A new [Bloc] should not be created in `BlocScope.value`.
   /// New instances should always be created using the
   /// default constructor within the [Create] function.
   ///
   /// ```dart
-  /// BlocProvider.value(
-  ///   value: BlocProvider.of<BlocA>(context),
+  /// BlocScope.value(
+  ///   value: BlocScope.of<BlocA>(context),
   ///   child: ScreenA(),
   /// );
   /// ```
-  BlocProvider.value({
+  BlocScope.value({
     Key? key,
     required T value,
     this.child,
@@ -86,13 +78,13 @@ class BlocProvider<T extends IStateObservable<Object?>>
   final T? _value;
 
   /// Method that allows widgets to access a [Bloc] instance
-  /// as long as their `BuildContext` contains a [BlocProvider] instance.
+  /// as long as their `BuildContext` contains a [BlocScope] instance.
   ///
   /// If we want to access an instance of `BlocA` which was provided higher up
   /// in the widget tree we can do so via:
   ///
   /// ```dart
-  /// BlocProvider.of<BlocA>(context);
+  /// BlocScope.of<BlocA>(context);
   /// ```
   static T of<T extends IStateObservable<Object?>>(
     BuildContext context, {
@@ -104,10 +96,10 @@ class BlocProvider<T extends IStateObservable<Object?>>
       if (e.valueType != T) rethrow;
       throw FlutterError(
         '''
-        BlocProvider.of() called with a context that does not contain a $T.
-        No ancestor could be found starting from the context that was passed to BlocProvider.of<$T>().
+        BlocScope.of() called with a context that does not contain a $T.
+        No ancestor could be found starting from the context that was passed to BlocScope.of<$T>().
 
-        This can happen if the context you used comes from a widget above the BlocProvider.
+        This can happen if the context you used comes from a widget above the BlocScope.
 
         The context used was: $context
         ''',

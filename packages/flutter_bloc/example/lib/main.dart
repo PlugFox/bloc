@@ -36,7 +36,7 @@ void main() => Bloc.observe(
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
-        home: BlocProvider(
+        home: BlocScope(
           create: (_) => CounterBloc(),
           child: CounterPage(),
         ),

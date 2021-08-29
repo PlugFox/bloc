@@ -31,7 +31,7 @@ typedef BlocListenerCondition<S> = bool Function(S previous, S current);
 /// unlike the `builder` in `BlocBuilder`.
 ///
 /// If the [bloc] parameter is omitted, [BlocListener] will automatically
-/// perform a lookup using [BlocProvider] and the current `BuildContext`.
+/// perform a lookup using [BlocScope] and the current `BuildContext`.
 ///
 /// ```dart
 /// BlocListener<BlocA, BlocAState>(
@@ -42,7 +42,7 @@ typedef BlocListenerCondition<S> = bool Function(S previous, S current);
 /// )
 /// ```
 /// Only specify the [bloc] if you wish to provide a [bloc] that is otherwise
-/// not accessible via [BlocProvider] and the current `BuildContext`.
+/// not accessible via [BlocScope] and the current `BuildContext`.
 ///
 /// ```dart
 /// BlocListener<BlocA, BlocAState>(

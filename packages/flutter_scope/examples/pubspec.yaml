@@ -1,5 +1,5 @@
-name: flutter_scope_examples
-description: flutter_scope_examples
+name: fox_flutter_scope_examples
+description: fox_flutter_scope_examples
 
 publish_to: 'none'
 
@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_scope:
+  fox_flutter_scope:
     path: '../'
 
 dev_dependencies:

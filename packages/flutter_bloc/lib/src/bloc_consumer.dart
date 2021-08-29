@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 /// `BlocBuilderCondition`, and `BlocListenerCondition`.
 ///
 /// If the [bloc] parameter is omitted, [BlocConsumer] will automatically
-/// perform a lookup using `BlocProvider` and the current `BuildContext`.
+/// perform a lookup using `BlocScope` and the current `BuildContext`.
 ///
 /// ```dart
 /// BlocConsumer<BlocA, BlocAState>(
@@ -73,7 +73,7 @@ class BlocConsumer<B extends IStateObservable<S>, S> extends StatefulWidget {
 
   /// The [bloc] that the [BlocConsumer] will interact with.
   /// If omitted, [BlocConsumer] will automatically perform a lookup using
-  /// `BlocProvider` and the current `BuildContext`.
+  /// `BlocScope` and the current `BuildContext`.
   final B? bloc;
 
   /// The [builder] function which will be invoked on each widget build.
