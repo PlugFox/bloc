@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fox_flutter_bloc/bloc.dart';
 
 /// Custom [IBlocObserver] which observes all bloc instances.
 class SimpleBlocObserver extends IBlocObserver {
