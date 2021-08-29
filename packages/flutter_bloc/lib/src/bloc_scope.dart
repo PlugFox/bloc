@@ -1,6 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:fox_core_bloc/bloc.dart';
+import 'package:fox_flutter_scope/scope.dart';
+
+/// TODO: doc
+typedef Create<T> = T Function(BuildContext context);
 
 /// {@template bloc_scope}
 /// Takes a [Create] function that is responsible for
@@ -18,27 +23,26 @@ import 'package:flutter/widgets.dart';
 ///
 /// It automatically handles closing the instance when used with [Create].
 /// By default, [Create] is called only when the instance is accessed.
-/// To override this behavior, set [lazy] to `false`.
 ///
 /// ```dart
 /// BlocScope(
-///   lazy: false,
 ///   create: (BuildContext context) => BlocA(),
 ///   child: ChildA(),
 /// );
 /// ```
 ///
 /// {@endtemplate}
-class BlocScope<T extends IStateObservable<Object?>> {
+class BlocScope<T extends IStateObservable<Object?>> extends StatelessWidget {
   /// {@macro bloc_scope}
-  BlocScope({
-    Key? key,
+  BlocScope.create({
     required Create<T> create,
     this.child,
-    this.lazy,
+    Key? key,
   })  : _create = create,
         _value = null,
-        super(key: key, child: child);
+        super(
+          key: key,
+        );
 
   /// Takes a [value] and a [child] which will have access to the [value] via
   /// `BlocScope.of(context)`.
@@ -58,20 +62,15 @@ class BlocScope<T extends IStateObservable<Object?>> {
   /// );
   /// ```
   BlocScope.value({
-    Key? key,
     required T value,
     this.child,
+    Key? key,
   })  : _value = value,
         _create = null,
-        lazy = null,
-        super(key: key, child: child);
+        super(key: key);
 
   /// Widget which will have access to the [Bloc].
   final Widget? child;
-
-  /// Whether the [Bloc] should be created lazily.
-  /// Defaults to `true`.
-  final bool? lazy;
 
   final Create<T>? _create;
 
@@ -88,11 +87,14 @@ class BlocScope<T extends IStateObservable<Object?>> {
   /// ```
   static T of<T extends IStateObservable<Object?>>(
     BuildContext context, {
-    bool listen = false,
+    bool listen = true,
   }) {
     try {
-      return Provider.of<T>(context, listen: listen);
-    } on ProviderNotFoundException catch (e) {
+      return Scope.of<T>(
+        context,
+        listen: listen,
+      );
+    } on ScopeNotFoundException catch (e) {
       if (e.valueType != T) rethrow;
       throw FlutterError(
         '''
@@ -108,35 +110,24 @@ class BlocScope<T extends IStateObservable<Object?>> {
   }
 
   @override
-  Widget buildWithChild(BuildContext context, Widget? child) {
+  Widget build(BuildContext context) {
     final value = _value;
-    return value != null
-        ? InheritedProvider<T>.value(
-            value: value,
-            startListening: _startListening,
-            lazy: lazy,
-            child: child,
-          )
-        : InheritedProvider<T>(
-            create: _create,
-            dispose: (_, bloc) {
-              if (bloc is StreamConsumer || bloc is Sink || bloc is IBlocSink) {
-                (bloc as dynamic).close();
-              }
-            },
-            startListening: _startListening,
-            child: child,
-            lazy: lazy,
-          );
-  }
-
-  static VoidCallback _startListening(
-    InheritedContext<IStateObservable> e,
-    IStateObservable value,
-  ) {
-    final subscription = value.stream.listen(
-      (Object? _) => e.markNeedsNotifyDependents(),
-    );
-    return subscription.cancel;
+    final create = _create;
+    if (value != null) {
+      return Scope.value<T>(value: value);
+    } else if (create != null) {
+      return Scope.create<T>(
+        create: create,
+        dispose: (bloc) {
+          if (bloc is StreamConsumer || bloc is Sink || bloc is IBlocSink) {
+            (bloc as dynamic).close();
+          }
+        },
+      );
+    } else {
+      return ErrorWidget(
+        Exception(),
+      );
+    }
   }
 }

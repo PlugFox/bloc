@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fox_flutter_bloc/bloc.dart';
@@ -8,18 +9,18 @@ class SimpleBlocObserver extends IBlocObserver {
   @override
   void onEvent(IBloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    print(event);
+    log(event.toString());
   }
 
   @override
   void onTransition(IBloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
-    print(transition);
+    log(transition.toString());
   }
 
   @override
   void onError(IBloc bloc, Object error, StackTrace stackTrace) {
-    print(error);
+    log(error.toString());
     super.onError(bloc, error, stackTrace);
   }
 }
@@ -34,9 +35,12 @@ void main() => Bloc.observe(
 /// * [flutter_bloc](https://pub.dev/packages/flutter_bloc)
 /// to manage the state of a counter.
 class App extends StatelessWidget {
+  ///
+  const App({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) => MaterialApp(
-        home: BlocScope(
+        home: BlocScope.create(
           create: (_) => CounterBloc(),
           child: CounterPage(),
         ),
@@ -46,6 +50,9 @@ class App extends StatelessWidget {
 /// A [StatelessWidget] which demonstrates
 /// how to consume and interact with a [CounterBloc].
 class CounterPage extends StatelessWidget {
+  ///
+  const CounterPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

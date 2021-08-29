@@ -1,14 +1,8 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/bloc.dart';
-import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
-
-/// Mixin which allows `MultiBlocListener` to infer the types
-/// of multiple [BlocListener]s.
-mixin BlocListenerSingleChildWidget on SingleChildWidget {}
+import 'package:fox_core_bloc/bloc.dart';
+import 'package:fox_flutter_scope/scope.dart';
 
 /// Signature for the `listener` function which takes the `BuildContext` along
 /// with the `state` and is responsible for executing in response to
@@ -80,7 +74,7 @@ typedef BlocListenerCondition<S> = bool Function(S previous, S current);
 /// ```
 /// {@endtemplate}
 class BlocListener<B extends IStateObservable<S>, S>
-    extends BlocListenerBase<B, S> with BlocListenerSingleChildWidget {
+    extends BlocListenerBase<B, S> {
   /// {@macro bloc_listener}
   /// {@macro bloc_listener_listen_when}
   const BlocListener({
@@ -106,15 +100,15 @@ class BlocListener<B extends IStateObservable<S>, S>
 /// is defined by sub-classes.
 /// {@endtemplate}
 abstract class BlocListenerBase<B extends IStateObservable<S>, S>
-    extends SingleChildStatefulWidget {
+    extends StatefulWidget {
   /// {@macro bloc_listener_base}
   const BlocListenerBase({
-    Key? key,
     required this.listener,
     this.bloc,
     this.child,
     this.listenWhen,
-  }) : super(key: key, child: child);
+    Key? key,
+  }) : super(key: key);
 
   /// The widget which will be rendered as a descendant of the
   /// [BlocListenerBase].
@@ -133,21 +127,20 @@ abstract class BlocListenerBase<B extends IStateObservable<S>, S>
   final BlocListenerCondition<S>? listenWhen;
 
   @override
-  SingleChildState<BlocListenerBase<B, S>> createState() =>
-      _BlocListenerBaseState<B, S>();
+  State<BlocListenerBase<B, S>> createState() => _BlocListenerBaseState<B, S>();
 }
 
 class _BlocListenerBaseState<B extends IStateObservable<S>, S>
-    extends SingleChildState<BlocListenerBase<B, S>> {
+    extends State<BlocListenerBase<B, S>> {
   StreamSubscription<S>? _subscription;
-  late B _bloc;
-  late S _previousState;
+  B? _bloc;
+  S? _previousState;
 
   @override
   void initState() {
     super.initState();
     _bloc = widget.bloc ?? context.read<B>();
-    _previousState = _bloc.state;
+    _previousState = _bloc?.state;
     _subscribe();
   }
 
@@ -160,7 +153,7 @@ class _BlocListenerBaseState<B extends IStateObservable<S>, S>
       if (_subscription != null) {
         _unsubscribe();
         _bloc = currentBloc;
-        _previousState = _bloc.state;
+        _previousState = _bloc?.state;
       }
       _subscribe();
     }
@@ -174,16 +167,10 @@ class _BlocListenerBaseState<B extends IStateObservable<S>, S>
       if (_subscription != null) {
         _unsubscribe();
         _bloc = bloc;
-        _previousState = _bloc.state;
+        _previousState = _bloc?.state;
       }
       _subscribe();
     }
-  }
-
-  @override
-  Widget buildWithChild(BuildContext context, Widget? child) {
-    if (widget.bloc == null) context.select<B, int>(identityHashCode);
-    return child!;
   }
 
   @override
@@ -193,16 +180,22 @@ class _BlocListenerBaseState<B extends IStateObservable<S>, S>
   }
 
   void _subscribe() {
-    _subscription = _bloc.stream.listen((state) {
-      if (widget.listenWhen?.call(_previousState, state) ?? true) {
-        widget.listener(context, state);
-      }
-      _previousState = state;
-    });
+    _subscription = _bloc?.stream.listen(
+      (next) {
+        final prev = _previousState;
+        if (prev != null && (widget.listenWhen?.call(prev, next) ?? true)) {
+          widget.listener(context, next);
+        }
+        _previousState = next;
+      },
+    );
   }
 
   void _unsubscribe() {
     _subscription?.cancel();
     _subscription = null;
   }
+
+  @override
+  Widget build(BuildContext context) => widget.child ?? const SizedBox.shrink();
 }

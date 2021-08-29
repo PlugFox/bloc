@@ -1,4 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:fox_core_bloc/bloc.dart';
+import 'package:fox_flutter_scope/scope.dart';
+
+import 'bloc_listener.dart';
 
 /// Signature for the `builder` function which takes the `BuildContext` and
 /// [state] and is responsible for returning a widget which is to be rendered.
@@ -120,14 +124,14 @@ abstract class BlocBuilderBase<B extends IStateObservable<S>, S>
 
 class _BlocBuilderBaseState<B extends IStateObservable<S>, S>
     extends State<BlocBuilderBase<B, S>> {
-  late B _bloc;
-  late S _state;
+  B? _bloc;
+  S? _state;
 
   @override
   void initState() {
     super.initState();
-    _bloc = widget.bloc ?? context.read<B>();
-    _state = _bloc.state;
+    final bloc = _bloc = widget.bloc ?? context.read<B>();
+    _state = bloc.state;
   }
 
   @override
@@ -137,28 +141,34 @@ class _BlocBuilderBaseState<B extends IStateObservable<S>, S>
     final currentBloc = widget.bloc ?? oldBloc;
     if (oldBloc != currentBloc) {
       _bloc = currentBloc;
-      _state = _bloc.state;
+      _state = currentBloc.state;
     }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final bloc = widget.bloc ?? context.read<B>();
+    final bloc = widget.bloc ?? context.watch<B>();
     if (_bloc != bloc) {
       _bloc = bloc;
-      _state = _bloc.state;
+      _state = bloc.state;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.bloc == null) context.select<B, int>(identityHashCode);
+    final bloc = _bloc;
+    final state = _state;
+    if (bloc == null || state == null) {
+      return ErrorWidget(
+        Exception('Bloc/State not found in BuildContext'),
+      );
+    }
     return BlocListener<B, S>(
       bloc: _bloc,
       listenWhen: widget.buildWhen,
-      listener: (context, state) => setState(() => _state = state),
-      child: widget.build(context, _state),
+      listener: (context, next) => setState(() => _state = next),
+      child: widget.build(context, state),
     );
   }
 }
