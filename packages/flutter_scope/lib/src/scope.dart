@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'create_scope.dart';
-import 'exceptions.dart';
 import 'inherited_scope.dart';
 import 'interface_scope.dart';
+import 'multi_scope.dart';
 import 'value_scope.dart';
 
 /// {@template scope}
@@ -58,6 +58,21 @@ abstract class Scope implements Widget, IScope {
         child,
         shouldNotify,
         key,
+      );
+
+  /// TODO: doc
+  @factory
+  static MultiScope multi({
+    required List<IScope> scopes,
+    Widget? child,
+    TransitionBuilder? builder,
+    Key? key,
+  }) =>
+      MultiScope(
+        scopes: scopes,
+        child: child,
+        builder: builder,
+        key: key,
       );
 
   /// Obtains the nearest [Scope]<T> up its widget tree and returns its
