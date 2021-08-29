@@ -127,9 +127,7 @@ class BlocScope<T extends IStateObservable<Object?>> extends StatelessWidget {
         child: child,
       );
     } else {
-      return ErrorWidget(
-        Exception(),
-      );
+      throw UnsupportedError('BlocScope.build without value or create');
     }
   }
 }
