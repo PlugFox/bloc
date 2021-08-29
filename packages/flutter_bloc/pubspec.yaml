@@ -24,11 +24,11 @@ dependencies:
       ref: 'develop'
       path: 'packages/bloc'
 
-  scope:
+  flutter_scope:
     git:
       url: 'https://github.com/PlugFox/bloc.git'
       ref: 'develop'
-      path: 'packages/scope'
+      path: 'packages/flutter_scope'
 
 dev_dependencies:
   flutter_test:

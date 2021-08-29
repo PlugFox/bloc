@@ -417,7 +417,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
       );
 }
 
-/// Observe BLoC's with [IBlocObserver]
+/// Namespace for observe BLoC's with [IBlocObserver]
 @protected
 abstract class _ObserverManager {
   const _ObserverManager._();
