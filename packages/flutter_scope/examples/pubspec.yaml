@@ -4,7 +4,7 @@ description: fox_flutter_scope_examples
 version: 0.1.0+1-develop
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.13.0 <3.0.0"
 
 dependencies:
   flutter:

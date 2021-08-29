@@ -9,8 +9,8 @@ homepage: https://github.com/PlugFox/bloc
 #documentation: https://bloclibrary.dev/#/gettingstarted
 
 environment:
-  sdk: ^2.13.0
-  flutter: ^2.2.0
+  sdk: ">=2.13.0 <3.0.0"
+  flutter: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
