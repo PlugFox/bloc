@@ -1,9 +1,9 @@
+import 'package:core_scope/scope.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'create_scope.dart';
 import 'exceptions.dart';
-import 'global_scope.dart';
 import 'inherited_scope.dart';
 import 'interface_scope.dart';
 import 'value_scope.dart';
