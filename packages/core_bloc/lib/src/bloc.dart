@@ -319,13 +319,16 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   StreamSubscription<Transition<Event, State>>? _transitionSubscription;
 
   @override
+  @mustCallSuper
   void onChange(Change<State> change) => _observer?.onChange(this, change);
 
   @override
+  @mustCallSuper
   void addError(Object error, [StackTrace? stackTrace]) =>
       onError(error, stackTrace ?? StackTrace.current);
 
   @override
+  @mustCallSuper
   void add(Event event) {
     if (_eventController.isClosed) return;
     try {
@@ -337,9 +340,11 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   }
 
   @override
+  @mustCallSuper
   void onEvent(Event event) => _observer?.onEvent(this, event);
 
   @override
+  @mustCallSuper
   void onError(Object error, StackTrace stackTrace) {
     _observer?.onError(
       this,
@@ -364,6 +369,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
       events.asyncExpand(transitionFn);
 
   @override
+  @mustCallSuper
   void setState(State state) {
     if (_stateController.isClosed) return;
     onChange(Change<State>(currentState: this.state, nextState: state));
@@ -372,6 +378,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
   }
 
   @override
+  @mustCallSuper
   void onTransition(Transition<Event, State> transition) =>
       _observer?.onTransition(this, transition);
 
@@ -382,6 +389,7 @@ abstract class Bloc<Event extends Object?, State extends Object?>
       transitions;
 
   @override
+  @mustCallSuper
   Future<void> close() async {
     await _eventController.close();
     await _transitionSubscription?.cancel();
