@@ -15,6 +15,10 @@ class StateStream<State extends Object?> extends Stream<State>
 
   final Stream<State> _stream;
 
+  /// This stream is always broadcast
+  @override
+  bool get isBroadcast => true;
+
   @override
   StreamSubscription<State> listen(
     void Function(State state)? onData, {
@@ -31,10 +35,6 @@ class StateStream<State extends Object?> extends Stream<State>
 }
 
 mixin _StateStreamMixin<State extends Object?> on Stream<State> {
-  /// This stream is always broadcast
-  @override
-  bool get isBroadcast => true;
-
   /// This transformer is a shorthand for Stream.where followed by Stream.cast.
   ///
   /// [State]'s that do not match [T] are filtered out,
