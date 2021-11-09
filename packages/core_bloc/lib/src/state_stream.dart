@@ -53,8 +53,8 @@ mixin _StateStreamMixin<State extends Object?> on Stream<State> {
   ///
   /// [State]'s that do not match [T] are filtered out,
   ///  the resulting Stream will be of Type [T].
-  Stream<T> whereStates<T extends Object?>(bool Function(State state) filter) =>
-      where(filter).where((state) => state is T).cast<T>();
+  Stream<T> whereStates<T extends Object?>(bool Function(T state) filter) =>
+      whereState<T>().where(filter);
 
   /// Filter with whereStates<T>() and after that
   /// skips [State]'s if they are equal to the previous data event.
@@ -62,8 +62,7 @@ mixin _StateStreamMixin<State extends Object?> on Stream<State> {
   ///
   /// [State]'s that do not match [T] are filtered out,
   ///  the resulting Stream will be of Type [T].
-  Stream<T> whereUniques<T extends Object?>(
-          bool Function(State state) filter) =>
+  Stream<T> whereUniques<T extends Object?>(bool Function(T state) filter) =>
       whereStates<T>(filter).distinct();
 
   /// Upcast this object to Stream<State>
